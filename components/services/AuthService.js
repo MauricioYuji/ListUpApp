@@ -6,7 +6,25 @@ import { Constants, Facebook } from 'expo';
 import { post, get } from '../services/baseService';
 
 
-export function signIn(email: string, password: string) {
+export function confirmEmail(email: string) {
+
+    var user = {
+        email: email
+    };
+    //console.log("POST LOGIN");
+    return post("/user/sendconfirm/", user);
+
+}
+export function forgetpassword(email: string) {
+
+    var user = {
+        email: email
+    };
+    //console.log("POST LOGIN");
+    return post("/user/resetpassword/", user);
+
+}
+export function logIn(email: string, password: string) {
 
     var user = {
         password: password,
@@ -14,6 +32,17 @@ export function signIn(email: string, password: string) {
     };
     //console.log("POST LOGIN");
     return post("/login/", user);
+
+}
+export function signIn(email: string, fullname: string, password: string) {
+
+    var user = {
+        password: password,
+        fullname: fullname,
+        email: email
+    };
+    //console.log("POST LOGIN");
+    return post("/user/add", user);
 
 }
 export async function logOut() {

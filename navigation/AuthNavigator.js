@@ -4,11 +4,13 @@ import { createAppContainer, createSwitchNavigator, createStackNavigator } from 
 import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
 import ResetPasswordScreen from '../screens/Auth/ResetPasswordScreen';
+import ConfirmEmailScreen from '../screens/Auth/ConfirmEmailScreen';
 
 const AuthStack = createStackNavigator({
     Login: LoginScreen,
     Register: RegisterScreen,
-    ResetPassword: ResetPasswordScreen
+    ResetPassword: ResetPasswordScreen,
+    ConfirmEmail: ConfirmEmailScreen
 },
     {
         headerMode: 'none',

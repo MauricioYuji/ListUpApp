@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\components",
+    "\\components\\services",
+    "\\navigation",
+    "\\screens",
+    "\\screens\\Auth"
+  ],
+  "SelectedNode": "\\screens\\Auth\\ConfirmEmailScreen.js",
+  "PreviewInSolutionExplorer": false
+}

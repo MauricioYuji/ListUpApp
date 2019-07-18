@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { forgetpassword } from '../../components/services/AuthService';
 //import * as firebase from 'firebase';
 
 export default class ResetPasswordScreen extends React.Component {
@@ -18,13 +19,14 @@ export default class ResetPasswordScreen extends React.Component {
         const { email } = this.state;
 
         this.setState({ loading: 'enviar' });
-        //firebase.auth().sendPasswordResetEmail(email)
-        //    .then(() => {
-        //        this.setState({ errorMessage: null, loading: null, feedback: 'Confirme seu email para trocar a senha!' });
-        //    })
-        //    .catch(() => {
-        //        this.setState({ errorMessage: 'Usuário ou senha inválidos!', loading: null, feedback: null });
-        //    });
+        console.log("email: ", email);
+        forgetpassword(email).then(p => {
+            if (p.success) {
+                this.setState({ errorMessage: null, loading: null, feedback: 'Confirme seu email para trocar a senha!' });
+            } else {
+                this.setState({ errorMessage: 'Usuário ou senha inválidos!', loading: null, feedback: null });
+            }
+        });
     }
     render() {
         const loadingButton = this.state.loading;
@@ -42,6 +44,7 @@ export default class ResetPasswordScreen extends React.Component {
                 <View style={styles.loginBox}>
 
                     <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+                    <Text style={styles.defaultText}>Fale o seu email para enviarmos uma nova senha.</Text>
                     <View style={styles.inputGroup}>
                         <TextInput
                             style={this.state.errorMessage !== null ? styles.inputerror : styles.input}
@@ -88,7 +91,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#111',
     },
     logo: {
         marginBottom: 60
@@ -127,6 +129,11 @@ const styles = StyleSheet.create({
     },
     Feedback: {
         color: '#0F0',
+    },
+    defaultText: {
+        fontSize: 24,
+        color: '#FFF',
+        fontFamily: 'SourceSansPro-Regular'
     },
     buttonText: {
         fontSize: 20,

@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ActivityIndicator, DeviceEventEmitter } from 'react-native';
-import { signInWithFacebook } from '../../components/services/facebookAuth';
-import { signIn, storeUser } from '../../components/services/AuthService';
+import { logInWithFacebook } from '../../components/services/facebookAuth';
+import { logIn, storeUser } from '../../components/services/AuthService';
 //import * as firebase from 'firebase';
 import TabBarIcon from '../../components/UI/TabBarIcon';
 
@@ -19,37 +19,60 @@ export default class LoginScreen extends React.Component {
     facebooklogin() {
         const _self = this;
         this.setState({ loading: 'facebook' });
-        signInWithFacebook().then(() => {
-
-            _self.setState({ errorMessage: null, loading: null });
-        })
-            .catch(() => {
-                this.setState({ errorMessage: null, loading: null });
-            });
+        logInWithFacebook().then(p => {
+            if (p.success) {
+                if (p.type == 0) {
+                    console.log("OBJ: ", JSON.parse(p.data));
+                    DeviceEventEmitter.emit('setUser', p.data);
+                    _self.setState({ errorMessage: null, feedback: null, loading: null });
+                } else {
+                    _self.setState({ errorMessage: null, feedback: p.message, emailSend: true, loading: null });
+                }
+            } else {
+                _self.setState({ errorMessage: p.message, loading: null });
+            }
+        }).catch(() => {
+            _self.setState({ errorMessage: p.message, loading: null });
+        });
     }
     login() {
 
         const { email, password } = this.state;
         const _self = this;
+
         _self.setState({ loading: 'login', errorMessage: null, emailSend: false, feedback: null });
-        //console.log("LOGIN");
-        signIn(email, password).then(p => {
-            console.log("RETORNO LOGIN: ", p);
-            console.log("OBJ: ", JSON.parse(p.data));
-            if (p.success) {
-                DeviceEventEmitter.emit('setUser', p.data);
-                _self.setState({ errorMessage: null, loading: null });
-            } else {
-                _self.setState({ errorMessage: "Usuário inválido.", loading: null });
-            }
-        });
+        if (email != "" && password != "") {
+
+            //console.log("LOGIN");
+            logIn(email, password).then(p => {
+                console.log("RETORNO LOGIN: ", p);
+                if (p.success) {
+
+                    if (p.type == 0) {
+                        console.log("OBJ: ", JSON.parse(p.data));
+                        DeviceEventEmitter.emit('setUser', p.data);
+                        _self.setState({ errorMessage: null, feedback: null, loading: null });
+                    } else {
+                        _self.setState({ errorMessage: null, feedback: p.message, emailSend: true, loading: null });
+                    }
+                } else {
+                    _self.setState({ errorMessage: p.message, loading: null });
+                }
+            }).catch(() => {
+                _self.setState({ errorMessage: p.message, loading: null });
+            });
+        } else {
+
+            _self.setState({ loading: null, errorMessage: "Preencha o campo email e senha" });
+        }
 
 
 
     }
     sendEmail() {
-        var _self = this;
-        _self.setState({ errorMessage: null, loading: null, emailSend: false });
+        //var _self = this;
+        //_self.setState({ errorMessage: null, loading: null, emailSend: false });
+        this.props.navigation.navigate('ConfirmEmail');
     }
     render() {
         const loadingButton = this.state.loading;
@@ -82,7 +105,7 @@ export default class LoginScreen extends React.Component {
                         <TextInput
                             style={this.state.errorMessage !== null ? styles.inputerror : styles.input}
                             autoCapitalize="none"
-                            placeholder={this.state.secureTextEntry ? '********' : 'Password'}
+                            placeholder={this.state.secureTextEntry ? '*****' : 'Senha'}
                             onChangeText={password => this.setState({ password })}
                             value={this.state.password}
                             secureTextEntry={this.state.secureTextEntry}

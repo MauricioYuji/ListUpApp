@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ActivityInd
 import { signInWithFacebook } from '../../components/services/facebookAuth';
 import { updateData } from '../../components/services/baseService';
 import TabBarIcon from '../../components/UI/TabBarIcon';
+import { signIn } from '../../components/services/AuthService';
 
 export default class RegisterScreen extends React.Component {
     constructor(props) {
@@ -28,26 +29,19 @@ export default class RegisterScreen extends React.Component {
     }
 
     facebookloggin() {
+        const _self = this;
         this.setState({ loading: 'facebook' });
-        signInWithFacebook().then(() => {
 
-            //var user = firebase.auth().currentUser;
-            //var obj = {
-            //    uid: user.uid,
-            //    photoURL: user.photoURL,
-            //    displayName: user.displayName,
-            //    email: user.email,
-            //    flagtutorial: false
-            //};
-            //updateData('UserInfo/' + user.uid, obj).then((p) => {
-            //    _self.setState({ errorMessage: null, loading: null });
-            //});
-
-            
-        })
-            .catch(() => {
-                this.setState({ errorMessage: null, loading: null });
-            });
+        signInWithFacebook().then(p => {
+            console.log("p: ", p);
+            if (p.success) {
+                _self.setState({ errorMessage: null, loading: null, feedback: p.message });
+            } else {
+                _self.setState({ errorMessage: p.message, loading: null, feedback: null });
+            }
+        }).catch(() => {
+            _self.setState({ errorMessage: p.message, loading: null });
+        });
     }
     register() {
         const _self = this;
@@ -104,6 +98,15 @@ export default class RegisterScreen extends React.Component {
             this.setState({
                 emailerrorMessage: null, passworderrorMessage: null, confirmpassworderrorMessage: null
             });
+
+            signIn(email.value, name.value, password.value).then(p => {
+                console.log("RETORNO CADASTRO: ", p);
+                if (p.success) {
+                    _self.setState({ errorMessage: null, loading: null, feedback: p.message });
+                } else {
+                    _self.setState({ errorMessage: p.message, loading: null, feedback: null });
+                }
+            });
             //firebase.auth().createUserWithEmailAndPassword(email.value, password.value)
             //    .then(() => {
 
@@ -143,7 +146,7 @@ export default class RegisterScreen extends React.Component {
             });
         }
     }
-    
+
 
     renderButton() {
         if (this.state.loading === "register") {
@@ -184,6 +187,9 @@ export default class RegisterScreen extends React.Component {
         }
         if (this.state.confirmpassword.errorMessage !== null) {
             confirmpassworderrorMessage = <Text style={styles.errorFeedback}>{this.state.confirmpassword.errorMessage}</Text>;
+        }
+        if (this.state.errorMessage !== null) {
+            feedbackerrorMessage = <Text style={styles.errorFeedback}>{this.state.errorMessage}</Text>;
         }
         return (
             <View style={styles.container}
@@ -236,6 +242,7 @@ export default class RegisterScreen extends React.Component {
                                 />
                                 {confirmpassworderrorMessage}
                             </View>
+                            {feedbackerrorMessage}
                         </View>
                     ) : (
                             <Text style={styles.buttonText}>{feedback}</Text>
