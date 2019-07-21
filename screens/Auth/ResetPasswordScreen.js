@@ -22,9 +22,9 @@ export default class ResetPasswordScreen extends React.Component {
         console.log("email: ", email);
         forgetpassword(email).then(p => {
             if (p.success) {
-                this.setState({ errorMessage: null, loading: null, feedback: 'Confirme seu email para trocar a senha!' });
+                this.setState({ errorMessage: null, loading: null, feedback: p.message });
             } else {
-                this.setState({ errorMessage: 'Usuário ou senha inválidos!', loading: null, feedback: null });
+                this.setState({ errorMessage: p.message, loading: null, feedback: null }
             }
         });
     }
