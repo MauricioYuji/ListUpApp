@@ -24,7 +24,7 @@ export default class ResetPasswordScreen extends React.Component {
             if (p.success) {
                 this.setState({ errorMessage: null, loading: null, feedback: p.message });
             } else {
-                this.setState({ errorMessage: p.message, loading: null, feedback: null }
+                this.setState({ errorMessage: p.message, loading: null, feedback: null });
             }
         });
     }
