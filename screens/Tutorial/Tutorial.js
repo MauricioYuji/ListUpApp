@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Swiper from 'react-native-swiper';
+import { getUser } from '../../components/services/AuthService';
+import { updateTutorial } from '../../components/services/Service';
 
 export default class Tutorial extends React.Component {
     static navigationOptions = {
@@ -19,6 +21,22 @@ export default class Tutorial extends React.Component {
     }
 
     _doneTutorial = () => {
+        console.log("tutorial DONE");
+
+        getUser().then(obj => {
+            console.log("RETURN STORE: ", obj);
+
+            updateTutorial(obj.id).then(p => {
+                console.log("RETORNO LOGIN: ", p);
+                if (p.success) {
+                    obj.flagtutorial = true;
+                    DeviceEventEmitter.emit('setUser', obj);
+
+                }
+            }).catch(() => {
+
+            });
+        });
 
         //var user = firebase.auth().currentUser;
 

@@ -23,7 +23,7 @@ export default class LoginScreen extends React.Component {
             if (p.success) {
                 if (p.type == 0) {
                     console.log("OBJ: ", JSON.parse(p.data));
-                    DeviceEventEmitter.emit('setUser', p.data);
+                    DeviceEventEmitter.emit('setUser', JSON.parse(p.data));
                     _self.setState({ errorMessage: null, feedback: null, loading: null });
                 } else {
                     _self.setState({ errorMessage: null, feedback: p.message, emailSend: true, loading: null });
@@ -50,7 +50,7 @@ export default class LoginScreen extends React.Component {
 
                     if (p.type == 0) {
                         console.log("OBJ: ", JSON.parse(p.data));
-                        DeviceEventEmitter.emit('setUser', p.data);
+                        DeviceEventEmitter.emit('setUser', JSON.parse(p.data));
                         _self.setState({ errorMessage: null, feedback: null, loading: null });
                     } else {
                         _self.setState({ errorMessage: null, feedback: p.message, emailSend: true, loading: null });

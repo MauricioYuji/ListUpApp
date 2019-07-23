@@ -15,13 +15,13 @@ export default function App(props) {
     const [isLoadingComplete, setLoadingComplete, loading] = useState(false);
 
     useEffect(() => {
-        console.log("POST LOAD");
+        //console.log("POST LOAD");
         DeviceEventEmitter.addListener('setUser', (data) => {
-            console.log("EVENT EMITTER");
+            console.log("EVENT EMITTER: ", data);
             if (data != null) {
                 storeUser(data).then(p => {
-                    //console.log("RETURN STORE: ", p);
-                    var obj = JSON.parse(JSON.parse(p));
+                    console.log("RETURN STORED: ", p);
+                    var obj = JSON.parse(p);
                     _checkLogin(obj, setLoadingComplete);
                 });
             } else {
@@ -104,11 +104,11 @@ async function loadResourcesAsync() {
     ]);
 }
 function _checkLogin(obj, setLoadingComplete) {
-    //console.log("CHECK LOGIN");
+    console.log("CHECK LOGIN");
     setLoadingComplete(true);
     //console.log("data: ", data);
     //var obj = JSON.parse(JSON.parse(data));
-    //console.log("obj: ", obj);
+    console.log("obj: ", obj);
     if (obj != null) {
         //console.log("obj.flagtutorial: ", obj.flagtutorial);
         if (obj.flagtutorial) {
@@ -120,7 +120,10 @@ function _checkLogin(obj, setLoadingComplete) {
         }
     } else {
         console.log("SEM USER");
-        NavigationService.navigate('Auth');
+        deleteUser().then(() => {
+            NavigationService.navigate('Auth');
+        });
+
     }
 }
 function handleLoadingError(error: Error) {
@@ -130,6 +133,7 @@ function handleLoadingError(error: Error) {
 }
 function handleFinishLoading(setLoadingComplete) {
 
+    //_checkLogin(null, setLoadingComplete);
     getUser().then(obj => {
         console.log("RETURN STORE: ", obj);
         _checkLogin(obj, setLoadingComplete);

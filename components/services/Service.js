@@ -2,6 +2,18 @@
 import { getData, updateData, setData } from './baseService';
 
 
+import { post, get } from '../services/baseService';
+
+
+export function updateTutorial(id: string) {
+
+    var user = {
+        id: id
+    };
+    //console.log("POST LOGIN");
+    return post("/user/tutorial/", user);
+
+}
 
 
 //const getGame = async (keys) => {

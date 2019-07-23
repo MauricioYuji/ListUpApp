@@ -53,30 +53,32 @@ export async function logOut() {
 
 
 }
-_getData = async () => {
-    console.log("GET STORAGE");
-    try {
-        await AsyncStorage.getItem("user").then((value) => {
-            consolelog("value: ", value);
-            return value;
-        }).then(res => {
-            //do something else
-            consolelog("res: ", res);
-            return res;
-        });
-    } catch (error) {
-        // Error saving data
-    }
-};
+//_getData = async () => {
+//    console.log("GET STORAGE");
+//    try {
+//        await AsyncStorage.getItem("user").then((value) => {
+//            consolelog("value: ", value);
+//            return value;
+//        }).then(res => {
+//            //do something else
+//            consolelog("res: ", res);
+//            return res;
+//        });
+//    } catch (error) {
+//        // Error saving data
+//    }
+//};
 
 export async function getUser() {
     try {
         return AsyncStorage.getItem("user").then(p => {
-
-            var user = JSON.parse(JSON.parse(p));
-            
+            var user = JSON.parse(p);
+            console.log("user: ", user);
+            console.log("user.id: ", user.id);
+            console.log("user.token: ", user.token);
             if (user != null) {
                 return get("/user/" + user.id, user.token).then(p => {
+                    console.log("p: ", p);
                     return p;
                 });
             } else {
@@ -100,7 +102,7 @@ export async function getUser() {
 }
 export async function storeUser(user) {
     try {
-        console.log("try store");
+        //console.log("try store: ", JSON.stringify(user));
         AsyncStorage.setItem('user', JSON.stringify(user));
         return AsyncStorage.getItem('user');
     } catch (error) {

@@ -46,6 +46,8 @@ export const get = (path, token) => {
     let data = {
         method: 'GET',
         headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
         }
     };

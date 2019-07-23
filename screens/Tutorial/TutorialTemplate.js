@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 //import * as firebase from 'firebase';
 import Tutorial from '../Tutorial/Tutorial';
+import { getUser } from '../../components/services/AuthService';
+import { updateTutorial } from '../../components/services/Service';
 
 export default class TutorialTemplate extends React.Component {
     static navigationOptions = {
@@ -18,7 +20,23 @@ export default class TutorialTemplate extends React.Component {
     }
 
     _doneTutorial = () => {
+        console.log("tutorial DONE");
 
+
+        getUser().then(obj => {
+            console.log("RETURN STORE: ", obj);
+
+            updateTutorial(obj.id).then(p => {
+                console.log("RETORNO LOGIN: ", p);
+                if (p.success) {
+                    obj.flagtutorial = true;
+                    DeviceEventEmitter.emit('setUser', obj);
+
+                }
+            }).catch(() => {
+
+            });
+        });
         //var user = firebase.auth().currentUser;
 
         //var newuser = {
