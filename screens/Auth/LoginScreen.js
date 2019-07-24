@@ -16,14 +16,26 @@ export default class LoginScreen extends React.Component {
     state = {
         secureTextEntry: true, email: '', password: '', errorMessage: null, loading: null, emailSend: false, feedback: null
     };
+
+    componentWillMount() {
+
+        const { navigation } = this.props;
+        const feedback = navigation.getParam('feedback', '');
+        console.log("feedback: ", feedback);
+        if (feedback != "")
+            this.setState({ feedback: feedback });
+
+
+    }
     facebooklogin() {
         const _self = this;
         this.setState({ loading: 'facebook' });
         logInWithFacebook().then(p => {
             if (p.success) {
                 if (p.type == 0) {
-                    console.log("OBJ: ", JSON.parse(p.data));
-                    DeviceEventEmitter.emit('setUser', JSON.parse(p.data));
+                    var obj = JSON.parse(p.data);
+                    obj.token = p.token;
+                    DeviceEventEmitter.emit('setUser', obj);
                     _self.setState({ errorMessage: null, feedback: null, loading: null });
                 } else {
                     _self.setState({ errorMessage: null, feedback: p.message, emailSend: true, loading: null });
@@ -45,12 +57,12 @@ export default class LoginScreen extends React.Component {
 
             //console.log("LOGIN");
             logIn(email, password).then(p => {
-                console.log("RETORNO LOGIN: ", p);
                 if (p.success) {
 
                     if (p.type == 0) {
-                        console.log("OBJ: ", JSON.parse(p.data));
-                        DeviceEventEmitter.emit('setUser', JSON.parse(p.data));
+                        var obj = JSON.parse(p.data);
+                        obj.token = p.token;
+                        DeviceEventEmitter.emit('setUser', obj);
                         _self.setState({ errorMessage: null, feedback: null, loading: null });
                     } else {
                         _self.setState({ errorMessage: null, feedback: p.message, emailSend: true, loading: null });

@@ -17,15 +17,21 @@ export default function App(props) {
     useEffect(() => {
         //console.log("POST LOAD");
         DeviceEventEmitter.addListener('setUser', (data) => {
-            console.log("EVENT EMITTER: ", data);
             if (data != null) {
                 storeUser(data).then(p => {
-                    console.log("RETURN STORED: ", p);
-                    var obj = JSON.parse(p);
+                    var obj = {
+                        data: p,
+                        success: true
+                    };
                     _checkLogin(obj, setLoadingComplete);
                 });
             } else {
-                _checkLogin(null, setLoadingComplete);
+                var obj = {
+                    data: null,
+                    success: false,
+                    message: 'Ocorreu algum erro!'
+                };
+                _checkLogin(obj, setLoadingComplete);
             }
         });
     }, []);
@@ -103,25 +109,27 @@ async function loadResourcesAsync() {
         }),
     ]);
 }
+function handleFinishLoading(setLoadingComplete) {
+
+    //_checkLogin(null, setLoadingComplete);
+    getUser().then(obj => {
+        _checkLogin(obj, setLoadingComplete);
+    });
+}
 function _checkLogin(obj, setLoadingComplete) {
-    console.log("CHECK LOGIN");
     setLoadingComplete(true);
-    //console.log("data: ", data);
-    //var obj = JSON.parse(JSON.parse(data));
-    console.log("obj: ", obj);
-    if (obj != null) {
-        //console.log("obj.flagtutorial: ", obj.flagtutorial);
-        if (obj.flagtutorial) {
-            //console.log("MAIN");
+    if (obj.data != null) {
+        var data = JSON.parse(obj.data);
+        if (data.flagtutorial) {
             NavigationService.navigate('Main');
         } else {
-            //console.log("TUTORIAL");
             NavigationService.navigate('Tutorial');
         }
     } else {
-        console.log("SEM USER");
         deleteUser().then(() => {
-            NavigationService.navigate('Auth');
+            NavigationService.navigate('Login', {
+                feedback: obj.message
+            });
         });
 
     }
@@ -130,14 +138,6 @@ function handleLoadingError(error: Error) {
     // In this case, you might want to report the error to your error reporting
     // service, for example Sentry
     console.warn(error);
-}
-function handleFinishLoading(setLoadingComplete) {
-
-    //_checkLogin(null, setLoadingComplete);
-    getUser().then(obj => {
-        console.log("RETURN STORE: ", obj);
-        _checkLogin(obj, setLoadingComplete);
-    });
 }
 
 const styles = StyleSheet.create({

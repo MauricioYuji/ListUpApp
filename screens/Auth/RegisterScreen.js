@@ -28,13 +28,15 @@ export default class RegisterScreen extends React.Component {
         }
     }
 
-    facebookloggin() {
+    facebooklogin() {
         const _self = this;
         this.setState({ loading: 'facebook' });
 
         signInWithFacebook().then(p => {
-            console.log("p: ", p);
             if (p.success) {
+                var obj = JSON.parse(p.data);
+                obj.token = p.token;
+                DeviceEventEmitter.emit('setUser', obj);
                 _self.setState({ errorMessage: null, loading: null, feedback: p.message });
             } else {
                 _self.setState({ errorMessage: p.message, loading: null, feedback: null });
@@ -264,7 +266,7 @@ export default class RegisterScreen extends React.Component {
                         {loadingButton === "facebook" ? (
                             <ActivityIndicator size="small" color="#FFFFFF" />
                         ) : (
-                                <TouchableOpacity onPress={() => { this.facebookloggin(); }} style={styles.buttonGroup}>
+                                <TouchableOpacity onPress={() => { this.facebooklogin(); }} style={styles.buttonGroup}>
                                     <TabBarIcon
                                         size={26}
                                         name={'facebook'}

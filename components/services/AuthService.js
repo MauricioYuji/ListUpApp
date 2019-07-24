@@ -1,4 +1,4 @@
-
+﻿
 import {
     AsyncStorage
 } from 'react-native';
@@ -12,7 +12,7 @@ export function confirmEmail(email: string) {
         email: email
     };
     //console.log("POST LOGIN");
-    return post("/user/sendconfirm/", user);
+    return post("/sendconfirm/", user);
 
 }
 export function forgetpassword(email: string) {
@@ -21,7 +21,7 @@ export function forgetpassword(email: string) {
         email: email
     };
     //console.log("POST LOGIN");
-    return post("/user/resetpassword/", user);
+    return post("/resetpassword/", user);
 
 }
 export function logIn(email: string, password: string) {
@@ -73,31 +73,27 @@ export async function getUser() {
     try {
         return AsyncStorage.getItem("user").then(p => {
             var user = JSON.parse(p);
-            console.log("user: ", user);
-            console.log("user.id: ", user.id);
-            console.log("user.token: ", user.token);
             if (user != null) {
                 return get("/user/" + user.id, user.token).then(p => {
-                    console.log("p: ", p);
                     return p;
                 });
             } else {
-                return null;
+                var obj = {
+                    success: false,
+                    message: '',
+                    data: null
+                };
+                return obj;
             }
 
         });
-        //AsyncStorage.getItem("user").then(user => {
-        //    consolelog("user: ", user);
-        //    return null;
-        //});
-        //return AsyncStorage.getItem('user').then(p => {
-        //    consolelog("p: ", p);
-        //    var user = JSON.parse(p);
-        //    consolelog("user: ", user);
-        //    return get("/user/", user.id);
-        //});
     } catch (error) {
-        // Error saving data
+        var obj = {
+            success: false,
+            message: 'Ocorreu algum erro!',
+            data: null
+        };
+        return obj;
     }
 }
 export async function storeUser(user) {

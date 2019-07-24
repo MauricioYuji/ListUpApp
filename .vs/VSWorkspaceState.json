@@ -5,8 +5,9 @@
     "\\components\\services",
     "\\navigation",
     "\\screens",
-    "\\screens\\Auth"
+    "\\screens\\Auth",
+    "\\screens\\Tutorial"
   ],
-  "SelectedNode": "\\screens\\Auth\\ResetPasswordScreen.js",
+  "SelectedNode": "\\components\\services\\AuthService.js",
   "PreviewInSolutionExplorer": false
 }
