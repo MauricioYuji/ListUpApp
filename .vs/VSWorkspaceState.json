@@ -6,8 +6,9 @@
     "\\navigation",
     "\\screens",
     "\\screens\\Auth",
+    "\\screens\\Pages",
     "\\screens\\Tutorial"
   ],
-  "SelectedNode": "\\components\\services\\AuthService.js",
+  "SelectedNode": "\\App.js",
   "PreviewInSolutionExplorer": false
 }
