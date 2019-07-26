@@ -68,6 +68,21 @@ export async function logOut() {
 //        // Error saving data
 //    }
 //};
+export async function getToken() {
+    try {
+        return AsyncStorage.getItem("user").then(p => {
+            var user = JSON.parse(p);
+
+            if (user != null)
+                return user.token;
+            else
+                return null;
+
+        });
+    } catch (error) {
+        return null;
+    }
+}
 
 export async function getUser() {
     try {

@@ -49,7 +49,6 @@ class Menu extends Component {
     }
     logoff() {
         logOut().then(p => {
-            console.log("logout: ", p);
             DeviceEventEmitter.emit('setUser', null);
         });
         //firebase.auth().signOut().then(function () {

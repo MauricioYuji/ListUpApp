@@ -21,7 +21,6 @@ export default class LoginScreen extends React.Component {
 
         const { navigation } = this.props;
         const feedback = navigation.getParam('feedback', '');
-        console.log("feedback: ", feedback);
         if (feedback != "")
             this.setState({ feedback: feedback });
 

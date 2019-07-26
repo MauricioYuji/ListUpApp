@@ -12,7 +12,8 @@ import { getUser, deleteUser, storeUser } from './components/services/AuthServic
 import AppNavigator from './navigation/AppNavigator';
 
 export default function App(props) {
-    const [isLoadingComplete, setLoadingComplete, loading] = useState(false);
+    const [isLoadingComplete, setLoadingComplete] = useState(false);
+    const [isloading, setloading] = useState(false);
 
     useEffect(() => {
         //console.log("POST LOAD");
@@ -29,10 +30,13 @@ export default function App(props) {
                 var obj = {
                     data: null,
                     success: false,
-                    message: 'Ocorreu algum erro!'
+                    message: ''
                 };
                 _checkLogin(obj, setLoadingComplete);
             }
+        });
+        DeviceEventEmitter.addListener('loading', (data) => {
+            setloading(data);
         });
     }, []);
 
@@ -61,7 +65,7 @@ export default function App(props) {
                 <AppNavigator ref={navigatorRef => {
                     NavigationService.setTopLevelNavigator(navigatorRef);
                 }} />
-                {loading &&
+                {isloading &&
                     <Modal
                         animationType="fade"
                         transparent={true}
@@ -113,7 +117,21 @@ function handleFinishLoading(setLoadingComplete) {
 
     //_checkLogin(null, setLoadingComplete);
     getUser().then(obj => {
+        var data = null;
+        if (obj.data != null) {
+            data = JSON.parse(obj.data);
+            data.token = obj.token;
+
+            storeUser(data).then(p => {
+                var obj = {
+                    data: p,
+                    success: true
+                };
+
+            });
+        }
         _checkLogin(obj, setLoadingComplete);
+
     });
 }
 function _checkLogin(obj, setLoadingComplete) {
@@ -130,6 +148,7 @@ function _checkLogin(obj, setLoadingComplete) {
             NavigationService.navigate('Login', {
                 feedback: obj.message
             });
+
         });
 
     }

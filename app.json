@@ -26,6 +26,9 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "package": "com.ListUP.app"
+    },
     "extra": {
       "facebook": {
         "appId": "282570635750496"

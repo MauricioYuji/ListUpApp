@@ -3,6 +3,7 @@ import { getData, updateData, setData } from './baseService';
 
 
 import { post, get } from '../services/baseService';
+import { getToken } from './AuthService';
 
 
 export function updateTutorial(id: string) {
@@ -12,6 +13,14 @@ export function updateTutorial(id: string) {
     };
     //console.log("POST LOGIN");
     return post("/user/tutorial/", user);
+
+}
+export function getGames(page: int) {
+
+    return getToken().then(token => {
+        return get("/games/?page=" + page + "&perpage=10", token);
+
+    });
 
 }
 

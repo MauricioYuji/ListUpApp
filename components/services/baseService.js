@@ -1,6 +1,6 @@
 //import * as firebase from 'firebase';
-const base = "http://192.168.15.12:3000";
-//const base = "http://191.8.8.200:3000";
+//const base = "http://192.168.15.12:3000";
+const base = "http://179.98.79.54:3000";
 
 
 export const put = (path, obj, token) => {
@@ -27,7 +27,6 @@ export const post = (path, obj, token) => {
     //    },
     //    body: JSON.stringify(obj),
     //});
-
     let data = {
         method: 'POST',
         body: JSON.stringify(obj),
