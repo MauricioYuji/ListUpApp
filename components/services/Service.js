@@ -2,9 +2,14 @@
 import { getData, updateData, setData } from './baseService';
 
 
-import { post, get } from '../services/baseService';
+import { post, get, del } from '../services/baseService';
 import { getToken } from './AuthService';
 
+const token = "";
+getToken().then(token => {
+    this.token = token;
+
+});
 
 export function updateTutorial(id: string) {
 
@@ -12,18 +17,80 @@ export function updateTutorial(id: string) {
         id: id
     };
     //console.log("POST LOGIN");
-    return post("/user/tutorial/", user);
+    return post("/user/tutorial/", user, this.token);
 
 }
-export function getGames(page: int) {
+export function createOrupdateList(obj: any) {
+    //console.log("obj: ", JSON.stringify(obj));
+    if (obj._id == undefined) {
+        return post("/lists/add/", obj, this.token);
+    } else {
+        return put("/lists/edit/" + obj._id, obj, this.token);
+    }
 
-    return getToken().then(token => {
-        return get("/games/?page=" + page + "&perpage=10", token);
+}
+export function getLists() {
+    return get("/lists/", this.token);
 
-    });
+}
+export function getList(key: string) {
+    return get("/lists/" + key, this.token);
+
+}
+export function getGames(page: number, s: string, c: string, g: string) {
+
+    //return getToken().then(token => {
+    //    var url = "/games/?page=" + page + "&perpage=10";
+    //    if (s != "")
+    //        url += "&s=" + s;
+    //    if (c != "")
+    //        url += "&c=" + c;
+    //    if (g != "")
+    //        url += "&g=" + g;
+    //    return get(url, token);
+
+    //});
+    var url = "/games/?page=" + page + "&perpage=10";
+    if (s != "")
+        url += "&s=" + s;
+    if (c != "")
+        url += "&c=" + c;
+    if (g != "")
+        url += "&g=" + g;
+    return get(url, this.token);
+
+}
+export function getGame(key: string) {
+
+    //return getToken().then(token => {
+    //    return get("/games/" + key, token);
+
+    //});
+
+    return get("/games/" + key, this.token);
 
 }
 
+export const deleteItemsFromList = async (keys) => {
+
+    console.log("keys: ", keys);
+    //var user = firebase.auth().currentUser;
+
+    return del("/lists/delete/", keys, this.token);
+
+    //let lists = null;
+    //var objgames = [];
+    //await firebase.database().ref('/userLists/' + user.uid).once('value').then(function (snapshot) {
+    //    lists = snapshot.val();
+    //    for (var i = 0; i < keys.length; i++) {
+    //        lists[keys[i]] = null;
+    //    }
+    //    updateData('/userLists/' + user.uid + '/', lists)
+    //        .then((img) => {
+    //        });
+    //});
+
+};
 
 //const getGame = async (keys) => {
 
@@ -99,7 +166,7 @@ export const structureGames = async (games) => {
             var consoles = [];
             var companies = [];
             var item = games[key];
-            var file = { key: games[key].img, url: "", file: null };
+            //var file = { key: games[key].img, url: "", file: null };
 
             if (item.keyconsole != undefined) {
                 for (var j = 0; j < item.keyconsole.length; j++) {
@@ -110,39 +177,39 @@ export const structureGames = async (games) => {
                         companies.push(c);
                 }
             }
-            if (item.keygenre != undefined) {
-                for (var j = 0; j < item.keygenre.length; j++) {
-                    genres.push(list.Genres[item.keygenre[j]]);
-                }
-            }
+            //if (item.keygenre != undefined) {
+            //    for (var j = 0; j < item.keygenre.length; j++) {
+            //        genres.push(list.Genres[item.keygenre[j]]);
+            //    }
+            //}
             var obj = {
-                key: key,
+                _id: item._id,
                 name: item.name,
-                image: file,
-                genres: genres,
+                img: item.img,
+                genres: item.keygenre,
                 consoles: consoles,
                 companies: companies,
             };
             objgames.push(obj);
         }
+        resolve(objgames);
+
+        //var imgkeys = [];
+        //for (let key in games) {
+        //    if (!imgkeys.includes(games[key].img) && games[key].img != "")
+        //        imgkeys.push(games[key].img);
+        //}
+        //getImages(imgkeys).then((imgs) => {
+        //    for (let key in objgames) {
+        //        if (objgames[key].image.key != "") {
+        //            objgames[key].image.url = imgs[objgames[key].image.key].url;
+        //            objgames[key].image.file = imgs[objgames[key].image.key].file;
+        //        }
 
 
-        var imgkeys = [];
-        for (let key in games) {
-            if (!imgkeys.includes(games[key].img) && games[key].img != "")
-                imgkeys.push(games[key].img);
-        }
-        getImages(imgkeys).then((imgs) => {
-            for (let key in objgames) {
-                if (objgames[key].image.key != "") {
-                    objgames[key].image.url = imgs[objgames[key].image.key].url;
-                    objgames[key].image.file = imgs[objgames[key].image.key].file;
-                }
-
-
-            }
-            resolve(objgames);
-        });
+        //    }
+        //    resolve(objgames);
+        //});
 
 
     });
@@ -158,57 +225,30 @@ export const structureList = async (obj) => {
                     keys.push(objkey);
             }
         }
-        getGame(keys).then((game) => {
-            var imgkeys = [];
-            for (var list in obj) {
-                var games = [];
-                for (var index in obj[list].games) {
-                    let key = Object.keys(obj[list].games[index])[0];
-                    var item = game[key];
-                    if (!imgkeys.includes(item.image.key) && item.image.key != "") {
-                        imgkeys.push(item.image.key);
-                    }
-                    var userconsoles = obj[list].games[index][key];
-                    for (var i = 0; i < userconsoles.length; i++) {
-                        userconsoles[i] = objlist.Consoles[userconsoles[i]];
-                    }
-                    item.userConsoles = userconsoles;
-                    games.push(item);
-                }
-                obj[list].key = list;
-                obj[list].games = games;
-            }
-            getImages(imgkeys).then((imgs) => {
+        if (keys.length > 0) {
+            getGame(keys).then((game) => {
                 for (var list in obj) {
-                    for (var key in obj[list].games) {
-                        if (imgs[obj[list].games[key].image.key] != undefined) {
-                            obj[list].games[key].image = imgs[obj[list].games[key].image.key];
+                    var games = [];
+                    for (var index in obj[list].games) {
+                        let key = Object.keys(obj[list].games[index])[0];
+                        var item = game[key];
+                        var userconsoles = obj[list].games[index][key];
+                        for (var i = 0; i < userconsoles.length; i++) {
+                            userconsoles[i] = objlist.Consoles[userconsoles[i]];
                         }
+                        item.userConsoles = userconsoles;
+                        games.push(item);
                     }
+                    obj[list].key = list;
+                    obj[list].games = games;
                 }
                 resolve(obj);
             });
-        });
-
-    });
-};
-export const deleteItemsFromList = async (keys) => {
-
-    var user = firebase.auth().currentUser;
-
-
-    let lists = null;
-    var objgames = [];
-    await firebase.database().ref('/userLists/' + user.uid).once('value').then(function (snapshot) {
-        lists = snapshot.val();
-        for (var i = 0; i < keys.length; i++) {
-            lists[keys[i]] = null;
+        } else {
+            resolve(obj);
         }
-        updateData('/userLists/' + user.uid + '/', lists)
-            .then((img) => {
-            });
-    });
 
+    });
 };
 export const deleteGamesFromList = async (keys, keylist) => {
 

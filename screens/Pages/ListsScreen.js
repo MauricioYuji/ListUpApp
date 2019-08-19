@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { insertData } from '../../components/services/baseService';
-import { deleteItemsFromList, structureList } from '../../components/services/Service';
+import { deleteItemsFromList, structureList, getLists } from '../../components/services/Service';
 import ListItem from '../../components/UI/ListItem';
 import TabBarIcon from '../../components/UI/TabBarIcon';
 import AddEditList from '../../components/UI/AddEditList';
@@ -51,6 +51,9 @@ export default class ListScreen extends React.Component {
         var _self = this;
 
 
+        DeviceEventEmitter.addListener('updatelist', (data) => {
+            this.loadData();
+        });
         DeviceEventEmitter.addListener('selectMode', (data) => {
             this.setState({ selectMode: data });
         });
@@ -62,6 +65,7 @@ export default class ListScreen extends React.Component {
     }
 
     setVisible(content) {
+        console.log("content: ", content);
         let _self = this;
         _self.setState({ modalVisible: false },
             () => {
@@ -105,7 +109,25 @@ export default class ListScreen extends React.Component {
         //        DeviceEventEmitter.emit('reloading', false);
         //    }
         //});
+        getLists().then(list => {
+            structureList(list.List).then(r => {
+                var obj = [];
+                var ol = Object.keys(r);
+                for (var item in r) {
+                    obj.push(r[item]);
+                }
+                _self.setState({ page: 0, lists: obj, listend: false, loading: false, mounted: true },
+                    () => {
+                        DeviceEventEmitter.emit('reloading', false);
+                    }
+                );
+                return true;
+            });
+        });
 
+        _self.setState({ page: 0, lists: [], listend: false, loading: false, mounted: true }, () => {
+            DeviceEventEmitter.emit('reloading', false);
+        });
     }
 
     arrayRemove(arr, value) {
@@ -134,6 +156,7 @@ export default class ListScreen extends React.Component {
             this.closeModal();
             _self.setState({ selectedItens: [], selectMode: false },
                 () => {
+                    DeviceEventEmitter.emit('updatelist', true);
                     DeviceEventEmitter.emit('selectMode', false);
                 }
             );
@@ -146,11 +169,14 @@ export default class ListScreen extends React.Component {
     }
     addItens = () => {
         let _self = this;
+        console.log("SHOW MODAL");
         this.setVisible(this._modalAdd());
     }
     callbackAdd = () => {
         this.setModalVisible(false);
         this.closeModal();
+
+        DeviceEventEmitter.emit('updatelist', true);
     }
     closeModal = () => {
         this.setState({
@@ -170,7 +196,7 @@ export default class ListScreen extends React.Component {
         let lists = this.state.lists;
         let items = [];
         for (let i = 0; i < lists.length; i++) {
-            items.push(<ListItem key={i} obj={lists[i]} callback={this.selectItem.bind(this)} id={lists[i].key} />);
+            items.push(<ListItem key={i} obj={lists[i]} callback={this.selectItem.bind(this)} id={lists[i]._id} />);
         }
         return items;
     }

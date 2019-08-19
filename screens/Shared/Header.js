@@ -261,7 +261,7 @@ export default class Header extends React.Component {
                 imgcolor = styles.filterButtonText;
             }
             obj.push(
-                <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveGenre(objarray[j].key)} key={objarray[j].name} style={[styleclass]}>
+                <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveGenre(objarray[j].name)} key={objarray[j].name} style={[styleclass]}>
                     <View>
                         <Text style={imgcolor}>{objarray[j].name}</Text>
                     </View>

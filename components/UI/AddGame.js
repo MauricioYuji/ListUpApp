@@ -8,7 +8,7 @@ import {
     Dimensions,
     TextInput,
 } from 'react-native';
-import { structureGames } from '../../components/services/Service';
+import { structureGames, getGames } from '../../components/services/Service';
 import AddGameItem from '../../components/UI/AddGameItem';
 
 
@@ -42,29 +42,53 @@ export default class AddGame extends React.Component {
                 return false;
             _self.setState({ searching: true },
                 () => {
-                    var re = new RegExp(search.toLowerCase(), 'g');
+                    //var re = new RegExp(search.toLowerCase(), 'g');
 
-                    firebase.database().ref('/Games/').on('value', function (snapshot) {
-                        var obj = {};
-                        for (var key in snapshot.val()) {
-                            let item = snapshot.val()[key];
-                            if ((item.name.toLowerCase().match(re) != null && search != "") || search == "") {
-                                obj[key] = item;
-                            }
+                    //firebase.database().ref('/Games/').on('value', function (snapshot) {
+                    //    var obj = {};
+                    //    for (var key in snapshot.val()) {
+                    //        let item = snapshot.val()[key];
+                    //        if ((item.name.toLowerCase().match(re) != null && search != "") || search == "") {
+                    //            obj[key] = item;
+                    //        }
+                    //    }
+
+                    //    structureGames(obj).then(games => {
+                    //        _self.setState({ games: games, searching: false },
+                    //            () => {
+                    //                _self.setState({ renderGames: _self.renderGames() },
+                    //                    () => {
+                    //                    }
+                    //                );
+                    //            }
+                    //        );
+                    //        return true;
+                    //    }).catch(err => console.log('There was an error:' + err));
+                    //});
+
+                    getGames(1, search.toLowerCase(), "", "").then(p => {
+                        //console.log("LIST GAMES: ", p);
+                        if (p.List != null) {
+                            structureGames(p.List).then(games => {
+                                _self.setState({ games: games, searching: false },
+                                    () => {
+                                        _self.setState({ renderGames: _self.renderGames() },
+                                            () => {
+                                            }
+                                        );
+                                    }
+                                );
+                                return true;
+                            }).catch(err => console.log('There was an error:' + err));
+
+                            //_self.filterObj();
+                        } else {
+                            DeviceEventEmitter.emit('loading', false);
                         }
+                    }).catch(() => {
 
-                        structureGames(obj).then(games => {
-                            _self.setState({ games: games, searching: false },
-                                () => {
-                                    _self.setState({ renderGames: _self.renderGames() },
-                                        () => {
-                                        }
-                                    );
-                                }
-                            );
-                            return true;
-                        }).catch(err => console.log('There was an error:' + err));
                     });
+
 
                 }
             );
@@ -79,12 +103,12 @@ export default class AddGame extends React.Component {
         let list = this.state.games;
         let items = [];
         for (let i = 0; i < list.length; i++) {
-            var game = this.props.list.games.filter(p => p.key == list[i].key)[0];
+            var game = this.props.list.games.filter(p => p._id == list[i]._id)[0];
             var userconsoles = null;
             if (game != undefined) {
                 userconsoles = game.userConsoles;
             }
-            items.push(<AddGameItem key={i} game={list[i]} userConsoles={userconsoles} callback={this.addGameSave.bind(this)} id={this.props.list.key} />);
+            items.push(<AddGameItem key={i} game={list[i]} userConsoles={userconsoles} callback={this.addGameSave.bind(this)} id={this.props.list._id} />);
         }
         console.log("======================");
         return items;

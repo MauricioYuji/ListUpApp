@@ -13,7 +13,7 @@ import {
 
 import NavigationService from '../../components/services/NavigationService';
 import { updateData } from '../../components/services/baseService';
-import { deleteGamesFromList, structureList, structureGames, deleteItemsFromList } from '../../components/services/Service';
+import { deleteGamesFromList, structureList, structureGames, deleteItemsFromList, getList } from '../../components/services/Service';
 import GameItem from '../../components/UI/GameItem';
 import TabBarIcon from '../../components/UI/TabBarIcon';
 import Header from '../../screens/Shared/Header';
@@ -110,9 +110,9 @@ export default class ListScreen extends React.Component {
         var _self = this;
         //var user = firebase.auth().currentUser;
 
-        //if (key == "") {
-        //    key = this.state.key;
-        //}
+        if (key == "") {
+            key = this.state.key;
+        }
         //firebase.database().ref('/userLists/' + user.uid + '/' + key).on('value', function (snapshot) {
         //    var obj = {};
         //    var list = null;
@@ -129,6 +129,22 @@ export default class ListScreen extends React.Component {
         //        return true;
         //    }).catch(err => console.log('There was an error:' + err));
         //});
+
+        getList(key).then(list => {
+            structureList(list).then(r => {
+                var obj = [];
+                var ol = Object.keys(r);
+                for (var item in r) {
+                    obj.push(r[item]);
+                }
+                _self.setState({ page: 0, list: list, listend: false, loading: false, mounted: true, key: key },
+                    () => {
+                        DeviceEventEmitter.emit('reloading', false);
+                    }
+                );
+                return true;
+            });
+        });
     }
     arrayRemove(arr, value) {
         return arr.filter(function (el) {
@@ -209,7 +225,7 @@ export default class ListScreen extends React.Component {
         );
 
     }
-    
+
     callbackAdd = () => {
         this.setState({ modalVisible: false });
         this.loadData("");
@@ -276,7 +292,7 @@ export default class ListScreen extends React.Component {
             }
         );
     }
-    
+
     renderGamesList() {
         let list = this.state.list.games;
         let items = [];
@@ -364,7 +380,7 @@ export default class ListScreen extends React.Component {
 
                 <Header style={styles.header} type={"info-list"} back={true} label={"Lista"} detail={this.state.list.games.length + " jogos"} itens={this._headerItens()} />
 
-                <ModalDefault type="slide" visible={this.state.mounted && this.state.modalVisible} modalActive={this.state.modalActive} closeModal={this.closeModal.bind(this)}/>
+                <ModalDefault type="slide" visible={this.state.mounted && this.state.modalVisible} modalActive={this.state.modalActive} closeModal={this.closeModal.bind(this)} />
 
 
             </View>

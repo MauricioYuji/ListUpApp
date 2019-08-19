@@ -14,6 +14,7 @@ import {
     View,
     Dimensions,
     Platform,
+    ScrollView
 } from 'react-native';
 import SortableList from 'react-native-sortable-list';
 import DragGame from '../../components/UI/DragGame';

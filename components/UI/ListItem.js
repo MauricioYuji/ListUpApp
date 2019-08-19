@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
     Text,
     View,
@@ -69,6 +69,18 @@ export default class ListItem extends React.Component {
         }
         return items;
     }
+    showListType(id) {
+        var value = "";
+        switch (id) {
+            case 0:
+                value = "Padrão";
+                break;
+            case 1:
+                value = "Ranking";
+                break;
+        }
+        return value;
+    }
     renderGamesNames() {
         let lists = this.props.obj.games;
         let items = "";
@@ -93,7 +105,7 @@ export default class ListItem extends React.Component {
                 <View style={[styles.listItem, itemStyle]}>
                     <View style={styles.itemInfo}>
                         <Text style={styles.labelTitle}>{this.props.obj.title}</Text>
-                        <Text style={styles.labelDetail}>{this.props.obj.games.length} jogos - Lista {this.props.obj.type}</Text>
+                        <Text style={styles.labelDetail}>{this.props.obj.games.length} jogos - Lista {this.showListType(this.props.obj.type)}</Text>
                         {this.renderGamesNames()}
                     </View>
                     <View style={styles.thumbArea}>

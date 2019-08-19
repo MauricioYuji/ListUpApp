@@ -1,6 +1,7 @@
 //import * as firebase from 'firebase';
-//const base = "http://192.168.15.12:3000";
-const base = "http://179.98.79.54:3000";
+const base = "http://192.168.15.12:3000";
+//const base = "http://yujishima.ddns.net:3000";
+//const base = "https://listupapp.herokuapp.com";
 
 
 export const put = (path, obj, token) => {
@@ -54,17 +55,17 @@ export const get = (path, token) => {
         .then(response => response.json());
 };
 
-export const del = (path, key, token) => {
+export const del = (path, obj, token) => {
     let data = {
-        method: 'POST',
+        method: 'DELETE',
+        body: JSON.stringify(obj),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
-            'X-CSRFToken': cookie.load('csrftoken')
+            'Authorization': 'Bearer ' + token
         }
     };
-    return fetch(base + path + key)
+    return fetch(base + path, data)
         .then(response => response.json())  // promise
         .then(json => dispatch(receiveAppos(json)));
 };

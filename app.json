@@ -1,13 +1,12 @@
 {
   "expo": {
-    "name": "Listup",
-    "slug": "ListUp",
+    "name": "ListUP",
+    "slug": "ListUP",
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",

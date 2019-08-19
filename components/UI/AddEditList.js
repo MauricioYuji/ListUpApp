@@ -1,6 +1,6 @@
 import React from 'react';
 //import * as firebase from 'firebase';
-import { insertData, updateData } from '../../components/services/baseService';
+import { createOrupdateList } from '../../components/services/Service';
 import {
     View,
     StyleSheet,
@@ -34,18 +34,26 @@ export default class AddEditList extends React.Component {
             var _self = this;
 
             //var user = firebase.auth().currentUser;
+            //console.log("obj: ", obj);
 
-            
-            //if (obj.key == undefined) {
-            //    insertData('userLists/' + user.uid + '/', obj)
-            //        .then((resp) => {
-            //            this.props.callback();
-            //        });
+            createOrupdateList(obj).then(p => {
+                console.log("RETORNO: ", p);
+                this.props.callback();
+            }).catch(() => {
+
+            });
+            //if (obj._id == undefined) {
+            //    post("/lists/", obj);
+            //    //insertData('userLists/' + user.uid + '/', obj)
+            //    //    .then((resp) => {
+            //    //        this.props.callback();
+            //    //    });
             //} else {
-            //    updateData('userLists/' + user.uid + '/' + obj.key, obj)
-            //        .then((resp) => {
-            //            this.props.callback();
-            //        });
+            //    put("/lists/edit/+"obj._id, obj);
+            //    //updateData('userLists/' + user.uid + '/' + obj.key, obj)
+            //    //    .then((resp) => {
+            //    //        this.props.callback();
+            //    //    });
             //}
         }
 
@@ -102,8 +110,8 @@ export default class AddEditList extends React.Component {
                                 this._setSelect(itemValue)
                             }>
                             <Picker.Item label="Selecione um tipo" value="" />
-                            <Picker.Item label="Lista Padrão" value="padrao" />
-                            <Picker.Item label="Ranking" value="ranking" />
+                            <Picker.Item label="Lista Padrão" value="0" />
+                            <Picker.Item label="Ranking" value="1" />
                         </Picker>
                     </View>
                     <View style={[styles.inputSelect, styles.SelectRight]}>
@@ -115,8 +123,8 @@ export default class AddEditList extends React.Component {
                                 this._setStatus(itemValue)
                             }>
                             <Picker.Item label="Selecione um status" value="" />
-                            <Picker.Item label="Público" value="publico" />
-                            <Picker.Item label="Privado" value="privado" />
+                            <Picker.Item label="Público" value="0" />
+                            <Picker.Item label="Privado" value="1" />
                         </Picker>
                     </View>
                 </View>

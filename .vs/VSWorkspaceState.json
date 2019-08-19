@@ -3,12 +3,13 @@
     "",
     "\\components",
     "\\components\\services",
+    "\\components\\UI",
     "\\screens",
     "\\screens\\Auth",
     "\\screens\\Pages",
     "\\screens\\Shared",
     "\\screens\\Tutorial"
   ],
-  "SelectedNode": "\\app.json",
+  "SelectedNode": "\\components\\services\\Service.js",
   "PreviewInSolutionExplorer": false
 }

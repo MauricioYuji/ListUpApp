@@ -29,7 +29,7 @@ export default class AddGameItem extends React.Component {
         var array = [];
         if (item != null) {
             for (var i = 0; i < item.length; i++) {
-                array.push(item[i].key);
+                array.push(item[i]._id);
             }
             _self.setState({ consolesActive: array });
         }
@@ -40,7 +40,7 @@ export default class AddGameItem extends React.Component {
         var array = [];
         if (item != null) {
             for (var i = 0; i < item.length; i++) {
-                array.push(item[i].key);
+                array.push(item[i]._id);
             }
             this.setState({ consolesActive: array });
         }
@@ -84,7 +84,7 @@ export default class AddGameItem extends React.Component {
                 list.push(key);
 
         } else {
-            var result = consoles.filter(p => p.keycompany === key).map(m => m.key);
+            var result = consoles.filter(p => p._idcompany === key).map(m => m._id);
             const found = result.every(r => list.includes(r));
 
             if (found)
@@ -104,7 +104,7 @@ export default class AddGameItem extends React.Component {
         _self.setState({ addFeedback: true }, () => {
             setTimeout(function () {
                 _self.setState({ addFeedback: false, showButtons: false }, () => {
-                    addGamestoList(_self.props.id, _self.props.game.key, _self.state.consolesActive).then((resp) => {
+                    addGamestoList(_self.props.id, _self.props.game._id, _self.state.consolesActive).then((resp) => {
                         _self.props.callback();
                     });
                 });
@@ -113,7 +113,7 @@ export default class AddGameItem extends React.Component {
     }
     renderThumb = (item) => {
 
-        if (item.key == "" || item.file == null)
+        if (item._id == "" || item.file == null)
             return (<Image source={require('../../assets/images/console-icon.png')} resizeMode={'cover'} style={styles.thumb} />);
         else {
             return (<Image source={{ uri: item.url }} resizeMode={'cover'} style={styles.thumb} />);
@@ -135,7 +135,7 @@ export default class AddGameItem extends React.Component {
         for (let j = 0; j < objarray.length; j++) {
             var styleclass = null;
             var imgcolor = '';
-            if (filteractive.includes(objarray[j].key.toString())) {
+            if (filteractive.includes(objarray[j]._id.toString())) {
                 styleclass = styles.filterButtonActive;
                 imgcolor = '#FFFFFF';
             } else {
@@ -143,7 +143,7 @@ export default class AddGameItem extends React.Component {
                 imgcolor = '#BBBBBB';
             }
             obj.push(
-                <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveConsole(objarray[j].key, false)} key={objarray[j].name} style={[styleclass]}>
+                <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveConsole(objarray[j]._id, false)} key={objarray[j].name} style={[styleclass]}>
                     <View>
                         <Image source={{ uri: objarray[j].img }} resizeMode={'contain'} style={[styles.filterButtonImg, { width: objarray[j].width / 5, height: objarray[j].height / 5, tintColor: imgcolor }]} />
                     </View>

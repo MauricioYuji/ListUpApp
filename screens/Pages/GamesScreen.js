@@ -32,7 +32,7 @@ export default class GameScreen extends React.Component {
         this.state = {
             page: 1,
             processing: true,
-            games: null,
+            games: [],
             gamesfiltered: [],
             filterObj: { consoles: [], genres: [], search: "" }
         };
@@ -47,27 +47,38 @@ export default class GameScreen extends React.Component {
     componentDidMount() {
         var _self = this;
         this.loadData();
-        //DeviceEventEmitter.addListener('getFilter', (data) => {
+        DeviceEventEmitter.addListener('getFilter', (data) => {
 
-        //    _self.setState({ filterObj: data, page: 0, gamesfiltered: [] },
-        //        () => {
-        //            _self.filterObj();
-        //        }
-        //    );
-        //});
+            if (!process) {
+                process = true;
+                _self.setState({ filterObj: data, page: 1, games: [] },
+                    () => {
+                        _self.loadData();
+                    }
+                );
+            }
+        });
     }
     loadData = () => {
         var _self = this;
 
-        getGames(this.state.page).then(p => {
-            console.log("LIST GAMES: ", p);
+        //console.log("filterObj: ", this.state.filterObj);
+        //console.log("page: ", this.state.page);
+        getGames(this.state.page, this.state.filterObj.search, this.state.filterObj.consoles.toString().trim(), this.state.filterObj.genres.toString().trim()).then(p => {
+            //console.log("LIST GAMES: ", p);
             if (p.List != null) {
-                _self.setState({ page: this.state.page, games: p.List },
-                    () => {
-                        DeviceEventEmitter.emit('loading', false);
-                        //_self.filterObj();
-                    }
-                );
+                structureGames(p.List).then(games => {
+                    //console.log("PROCESSADO: ", games);
+                    games = _self.state.games.concat(games);
+                    _self.setState({ page: this.state.page, games: games, processing: false },
+                        () => {
+                            DeviceEventEmitter.emit('loading', false);
+                            process = false;
+                        }
+                    );
+                }).catch(err => console.log('There was an error:' + err));
+
+                //_self.filterObj();
             } else {
                 DeviceEventEmitter.emit('loading', false);
             }
@@ -126,48 +137,59 @@ export default class GameScreen extends React.Component {
         var _self = this;
 
         DeviceEventEmitter.emit('loading', true);
-        getGames(1).then(p => {
-            console.log("LIST GAMES: ", p);
-            if (p.List != null) {
-                _self.setState({ page: 1, games: p.List, processing: false },
-                    () => {
-                        DeviceEventEmitter.emit('loading', false);
-                        //_self.filterObj();
-                    }
-                );
-            } else {
-                DeviceEventEmitter.emit('loading', false);
+        _self.setState({ page: 1, games: [], processing: true },
+            () => {
+                _self.loadData();
             }
-        }).catch(() => {
+        );
 
-        });
+        //getGames(1).then(p => {
+        //    console.log("LIST GAMES: ", p);
+        //    if (p.List != null) {
+        //        _self.setState({ page: 1, games: p.List, processing: false },
+        //            () => {
+        //                DeviceEventEmitter.emit('loading', false);
+        //                //_self.filterObj();
+        //            }
+        //        );
+        //    } else {
+        //        DeviceEventEmitter.emit('loading', false);
+        //    }
+        //}).catch(() => {
+
+        //});
     }
 
     onScrollEnd(event) {
         var _self = this;
-
+        console
         if (!process) {
             process = true;
 
             var page = this.state.page + 1;
-            console.log("page: ", page);
 
-            getGames(page).then(p => {
-                console.log("LIST GAMES: ", p);
-                if (p.List != null) {
-
-                    var games = _self.state.games.concat(p.List);
-                    _self.setState({ page: page, games: games },
-                        () => {
-
-                            process = false;
-                            //_self.filterObj();
-                        }
-                    );
+            _self.setState({ page: page, processing: true, isRefreshing: false },
+                () => {
+                    _self.loadData();
                 }
-            }).catch(() => {
+            );
 
-            });
+            //getGames(page).then(p => {
+            //    console.log("LIST GAMES: ", p);
+            //    if (p.List != null) {
+
+            //        var games = _self.state.games.concat(p.List);
+            //        _self.setState({ page: page, games: games },
+            //            () => {
+
+            //                process = false;
+            //                //_self.filterObj();
+            //            }
+            //        );
+            //    }
+            //}).catch(() => {
+
+            //});
         }
     }
     renderConsoles = (item, key) => {
@@ -205,7 +227,7 @@ export default class GameScreen extends React.Component {
         if (item == null) {
             return (<Image source={require('../../assets/images/console-icon.png')} resizeMode={'center'} style={{ width: '100%', height: columnWidth }} />);
         } else {
-            return (<Image source={{ uri: item[0].img }} style={{ width: '100%', height: columnWidth }} />);
+            return (<Image source={{ uri: item[0].img }} style={{ width: '100%', height: columnWidth / item[0].width * item[0].height }} />);
         }
     }
     _renderlist() {
@@ -232,6 +254,9 @@ export default class GameScreen extends React.Component {
                                     {this.renderThumb(item.img)}
                                     <View style={styles.cardHeader}>
                                         <Text style={styles.cardText}>{item.name}</Text>
+                                    </View>
+                                    <View style={styles.logosBox}>
+                                        {this.renderConsoles(item.consoles, item.key)}
                                     </View>
                                 </View>
                             </TouchableHighlight>
@@ -282,11 +307,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: "#222"
+        borderColor: "#222",
+        borderBottomWidth: 2,
+        borderBottomColor: '#48A2F8'
     },
     cardHeader: {
-        borderBottomWidth: 4,
-        borderBottomColor: '#48A2F8',
         padding: 4
     },
     cardText: {

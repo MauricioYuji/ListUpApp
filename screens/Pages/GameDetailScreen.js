@@ -9,14 +9,15 @@ import {
     TouchableHighlight,
     Dimensions,
     Modal,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    DeviceEventEmitter
 } from 'react-native';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import NavigationService from '../../components/services/NavigationService';
 import Layout from '../../constants/Layout';
 import { updateData } from '../../components/services/baseService';
-import { structureGames } from '../../components/services/Service';
+import { getGame, structureGames } from '../../components/services/Service';
 import LoadingScreen from '../Loading/LoadingScreen';
 import TabBarIcon from '../../components/UI/TabBarIcon';
 import AddGameButton from '../../components/UI/AddGameButton';
@@ -66,6 +67,35 @@ export default class GameDetailScreen extends React.Component {
         //        return true;
         //    }).catch(err => console.log('There was an error:' + err));
         //});
+
+
+
+        getGame(this.state.key).then(game => {
+            //console.log("GAME: ", game);
+            if (game != null) {
+                var obj = {};
+                obj[game._id] = game;
+                structureGames(obj).then(r => {
+                    //console.log("PROCESSADO: ", r);
+
+                    var game = null;
+                    for (var item in r) {
+                        game = r[item];
+                    }
+                    _self.setState({ loaded: true, game: game, mounted: true },
+                        () => {
+                            DeviceEventEmitter.emit('loading', false);
+                        }
+                    );
+                }).catch(err => console.log('There was an error:' + err));
+
+            } else {
+                DeviceEventEmitter.emit('loading', false);
+            }
+        }).catch(() => {
+
+        });
+
     }
     componentWillUnmount() {
         this.setState({ mounted: false });
@@ -85,16 +115,14 @@ export default class GameDetailScreen extends React.Component {
 
 
         for (let j = 0; j < objarray.length; j++) {
-            if (j == 0) {
+            if (j == objarray.length-1) {
                 obj.push(
-                    <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveGenre(objarray[j].key)} key={objarray[j].name}>
-                        <Text style={[styles.genreText]}>{objarray[j].name}</Text>
-                    </TouchableHighlight>);
+                    <Text key={j} style={[styles.genreText]}>{objarray[j]}</Text>
+                );
             } else {
                 obj.push(
-                    <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveGenre(objarray[j].key)} key={objarray[j].name}>
-                        <Text style={[styles.genreText]}> - {objarray[j].name}</Text>
-                    </TouchableHighlight>);
+                    <Text key={j} style={[styles.genreText]}>{objarray[j]} - </Text>
+                );
             }
 
         }
@@ -206,6 +234,15 @@ export default class GameDetailScreen extends React.Component {
         }
 
     }
+
+    renderThumb = (item) => {
+
+        if (item == null) {
+            return null;
+        } else {
+            return (<Image source={{ uri: item[0].img }} resizeMode={'cover'} style={[styles.backgroundBanner]} />);
+        }
+    }
     render() {
         const listscount = 3;
         let loaded = this.state.loaded;
@@ -214,9 +251,9 @@ export default class GameDetailScreen extends React.Component {
             return (
                 <View style={styles.container}>
                     <ScrollView>
-                        <Image source={{ uri: game.image.url }} resizeMode={'cover'} style={[styles.backgroundBanner]} />
+                        {this.renderThumb(game.img)}
                         <LinearGradient
-                            colors={['rgba(0,0,0,0.2)', 'rgba(0,0,0,0.8)']}
+                            colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,1)']}
                             useAngle
                             angle={180}
                             style={styles.backgroundOverlay}
@@ -423,7 +460,8 @@ const styles = StyleSheet.create({
     genreText: {
         color: '#FFF',
         fontSize: 14,
-        fontFamily: 'SourceSansPro-Black'
+        fontFamily: 'SourceSansPro-Black',
+        textTransform: 'capitalize'
     },
     backgroundOverlayModal: {
         height: Dimensions.get('window').height / 3,

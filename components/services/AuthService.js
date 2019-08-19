@@ -72,9 +72,9 @@ export async function getToken() {
     try {
         return AsyncStorage.getItem("user").then(p => {
             var user = JSON.parse(p);
-
+            console.log("user: ", user);
             if (user != null)
-                return user.token;
+                return user.id + "/" + user.token;
             else
                 return null;
 
