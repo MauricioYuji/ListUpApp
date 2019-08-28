@@ -7,6 +7,7 @@ import {
     View,
     Dimensions,
     TextInput,
+    DeviceEventEmitter
 } from 'react-native';
 import { structureGames, getGames } from '../../components/services/Service';
 import AddGameItem from '../../components/UI/AddGameItem';
@@ -21,80 +22,81 @@ export default class AddGame extends React.Component {
 
     state = {
         games: [],
-        searching: false
+        searching: false,
+        typing: false,
+        typingTimeout: 0,
+        search: ""
     };
     confirmdeleteItens = () => {
         this.props.confirmdeleteItens();
     }
     _searchGame(search) {
         var _self = this;
-        if (search == "") {
-            _self.setState({ games: [] },
-                () => {
-                    _self.setState({ renderGames: _self.renderGames() },
+
+
+        if (_self.state.typingTimeout) {
+            clearTimeout(_self.state.typingTimeout);
+        }
+
+        _self.setState({
+            typing: false,
+            typingTimeout: setTimeout(function () {
+                //self.sendToParent(self.state.name);
+
+                DeviceEventEmitter.emit('loading', true);
+                _self.setState({ page: 1, games: [], search: search },
+                    () => {
+
+                        if (search == "") {
+                            _self.setState({ page: 1, games: [], search: search },
+                                () => {
+                                    _self.setState({ renderGames: _self.renderGames() },
+                                        () => {
+                                        }
+                                    );
+                                }
+                            );
+                        } else {
+                            _self.loadData();
+                        }
+                    }
+                );
+            }, 1)
+        });
+
+
+
+
+    }
+
+    loadData = () => {
+        var _self = this;
+
+        //console.log("filterObj: ", this.state.filterObj);
+        //console.log("page: ", this.state.page);
+        getGames(1, this.state.search, "", "").then(p => {
+            //console.log("LIST GAMES: ", p);
+            if (p.List != null) {
+                structureGames(p.List).then(games => {
+                    //console.log("PROCESSADO: ", games);
+                    games = _self.state.games.concat(games);
+                    _self.setState({ page: this.state.page, games: games, processing: false, renderGames: _self.renderGames() },
                         () => {
+                            DeviceEventEmitter.emit('loading', false);
+                            process = false;
+
                         }
                     );
-                }
-            );
-        } else {
-            if (this.state.searching)
-                return false;
-            _self.setState({ searching: true },
-                () => {
-                    //var re = new RegExp(search.toLowerCase(), 'g');
+                }).catch(err => console.log('There was an error:' + err));
 
-                    //firebase.database().ref('/Games/').on('value', function (snapshot) {
-                    //    var obj = {};
-                    //    for (var key in snapshot.val()) {
-                    //        let item = snapshot.val()[key];
-                    //        if ((item.name.toLowerCase().match(re) != null && search != "") || search == "") {
-                    //            obj[key] = item;
-                    //        }
-                    //    }
+                //_self.filterObj();
+            } else {
+                DeviceEventEmitter.emit('loading', false);
+            }
+        }).catch(() => {
 
-                    //    structureGames(obj).then(games => {
-                    //        _self.setState({ games: games, searching: false },
-                    //            () => {
-                    //                _self.setState({ renderGames: _self.renderGames() },
-                    //                    () => {
-                    //                    }
-                    //                );
-                    //            }
-                    //        );
-                    //        return true;
-                    //    }).catch(err => console.log('There was an error:' + err));
-                    //});
+        });
 
-                    getGames(1, search.toLowerCase(), "", "").then(p => {
-                        //console.log("LIST GAMES: ", p);
-                        if (p.List != null) {
-                            structureGames(p.List).then(games => {
-                                _self.setState({ games: games, searching: false },
-                                    () => {
-                                        _self.setState({ renderGames: _self.renderGames() },
-                                            () => {
-                                            }
-                                        );
-                                    }
-                                );
-                                return true;
-                            }).catch(err => console.log('There was an error:' + err));
-
-                            //_self.filterObj();
-                        } else {
-                            DeviceEventEmitter.emit('loading', false);
-                        }
-                    }).catch(() => {
-
-                    });
-
-
-                }
-            );
-
-
-        }
     }
     addGameSave = () => {
 
@@ -108,7 +110,9 @@ export default class AddGame extends React.Component {
             if (game != undefined) {
                 userconsoles = game.userConsoles;
             }
-            items.push(<AddGameItem key={i} game={list[i]} userConsoles={userconsoles} callback={this.addGameSave.bind(this)} id={this.props.list._id} />);
+            console.log("game: ", game);
+            console.log("list[i]: ", list[i]);
+            //items.push(<AddGameItem key={i} game={list[i]} userConsoles={userconsoles} callback={this.addGameSave.bind(this)} id={list[i]._id} />);
         }
         console.log("======================");
         return items;

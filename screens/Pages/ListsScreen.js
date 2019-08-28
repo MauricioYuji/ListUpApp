@@ -37,7 +37,8 @@ export default class ListScreen extends React.Component {
                 games: [],
                 status: "",
                 description: "",
-                type: ""
+                type: "",
+                limit: ""
             },
             multiSelect: false,
             selectedItens: [],
@@ -153,7 +154,7 @@ export default class ListScreen extends React.Component {
         DeviceEventEmitter.emit('reloading', true);
         deleteItemsFromList(this.state.selectedItens).then(() => {
 
-            this.closeModal();
+            _self.closeModal();
             _self.setState({ selectedItens: [], selectMode: false },
                 () => {
                     DeviceEventEmitter.emit('updatelist', true);

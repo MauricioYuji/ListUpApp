@@ -34,7 +34,9 @@ export default class GameScreen extends React.Component {
             processing: true,
             games: [],
             gamesfiltered: [],
-            filterObj: { consoles: [], genres: [], search: "" }
+            filterObj: { consoles: [], genres: [], search: "" },
+            typing: false,
+            typingTimeout: 0
         };
 
     }
@@ -49,14 +51,35 @@ export default class GameScreen extends React.Component {
         this.loadData();
         DeviceEventEmitter.addListener('getFilter', (data) => {
 
-            if (!process) {
-                process = true;
-                _self.setState({ filterObj: data, page: 1, games: [] },
-                    () => {
-                        _self.loadData();
-                    }
-                );
+            if (_self.state.typingTimeout) {
+                clearTimeout(_self.state.typingTimeout);
             }
+
+            _self.setState({
+                typing: false,
+                typingTimeout: setTimeout(function () {
+                    //self.sendToParent(self.state.name);
+
+                    DeviceEventEmitter.emit('loading', true);
+                    _self.setState({ filterObj: data, page: 1, games: [] },
+                        () => {
+                            _self.loadData();
+                        }
+                    );
+                }, 1)
+            });
+
+
+
+            //if (!process) {
+            //    console.log("data: ", data);
+            //    process = true;
+            //    _self.setState({ filterObj: data, page: 1, games: [] },
+            //        () => {
+            //            _self.loadData();
+            //        }
+            //    );
+            //}
         });
     }
     loadData = () => {

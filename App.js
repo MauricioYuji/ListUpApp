@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 import Layout from './constants/Layout';
 import NavigationService from './components/services/NavigationService';
 import { getUser, deleteUser, storeUser } from './components/services/AuthService';
+import { setToken } from './components/services/Service';
 
 import AppNavigator from './navigation/AppNavigator';
 
@@ -20,6 +21,7 @@ export default function App(props) {
         DeviceEventEmitter.addListener('setUser', (data) => {
             if (data != null) {
                 storeUser(data).then(p => {
+                    setToken();
                     var obj = {
                         data: p,
                         success: true
@@ -123,6 +125,7 @@ function handleFinishLoading(setLoadingComplete) {
             data.token = obj.token;
 
             storeUser(data).then(p => {
+                setToken();
                 var obj = {
                     data: p,
                     success: true

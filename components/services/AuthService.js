@@ -72,7 +72,6 @@ export async function getToken() {
     try {
         return AsyncStorage.getItem("user").then(p => {
             var user = JSON.parse(p);
-            console.log("user: ", user);
             if (user != null)
                 return user.id + "/" + user.token;
             else
@@ -89,7 +88,7 @@ export async function getUser() {
         return AsyncStorage.getItem("user").then(p => {
             var user = JSON.parse(p);
             if (user != null) {
-                return get("/user/" + user.id, user.token).then(p => {
+                return get("/user/" + user.id, user.id + "/" + user.token).then(p => {
                     return p;
                 });
             } else {

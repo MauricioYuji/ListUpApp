@@ -26,11 +26,8 @@ export async function logInWithFacebook() {
 
             //const userdata = facebookProfileData.user.providerData[0];
             //console.log("userdata: ", userdata);
-            console.log('Logged in!', token);
             const response = await fetch(`https://graph.facebook.com/me?fields=id,name,email&access_token=${token}`);
             var obj = await response.json();
-            console.log('Logged in!', obj);
-            console.log('http://graph.facebook.com/' + obj.id + '/picture?type=square');
             var user = {
                 password: obj.id,
                 fullname: obj.name,
@@ -38,7 +35,6 @@ export async function logInWithFacebook() {
                 photoURL: 'http://graph.facebook.com/' + obj.id + '/picture?type=square',
                 isfacebook: true
             };
-            console.log("user: ", user);
             //console.log("POST LOGIN");
 
             

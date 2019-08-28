@@ -20,14 +20,11 @@ export default class TutorialTemplate extends React.Component {
     }
 
     _doneTutorial = () => {
-        console.log("tutorial DONE");
 
 
         getUser().then(obj => {
-            console.log("RETURN STORE: ", obj);
-
-            updateTutorial(obj.id).then(p => {
-                console.log("RETORNO LOGIN: ", p);
+            var user = JSON.parse(obj.data);
+            updateTutorial(user.id).then(p => {
                 if (p.success) {
                     obj.flagtutorial = true;
                     DeviceEventEmitter.emit('setUser', obj);

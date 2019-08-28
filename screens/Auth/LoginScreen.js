@@ -43,7 +43,7 @@ export default class LoginScreen extends React.Component {
                 _self.setState({ errorMessage: p.message, loading: null });
             }
         }).catch(() => {
-            _self.setState({ errorMessage: p.message, loading: null });
+            _self.setState({ errorMessage: 'Ocorreu algum erro, tente novamente.', loading: null });
         });
     }
     login() {

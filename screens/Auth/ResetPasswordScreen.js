@@ -19,7 +19,6 @@ export default class ResetPasswordScreen extends React.Component {
         const { email } = this.state;
 
         this.setState({ loading: 'enviar' });
-        console.log("email: ", email);
         forgetpassword(email).then(p => {
             if (p.success) {
                 this.setState({ errorMessage: null, loading: null, feedback: p.message });

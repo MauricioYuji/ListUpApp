@@ -15,8 +15,7 @@ export const put = (path, obj, token) => {
         }
     };
     return fetch(base + path, data)
-        .then(response => response.json())  // promise
-        .then(json => dispatch(receiveAppos(json)));
+        .then(response => response.json());
 };
 export const post = (path, obj, token) => {
 
@@ -66,7 +65,6 @@ export const del = (path, obj, token) => {
         }
     };
     return fetch(base + path, data)
-        .then(response => response.json())  // promise
-        .then(json => dispatch(receiveAppos(json)));
+        .then(response => response.json());
 };
 

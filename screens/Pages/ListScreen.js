@@ -183,10 +183,12 @@ export default class ListScreen extends React.Component {
         var _self = this;
 
         DeviceEventEmitter.emit('reloading', true);
-        deleteItemsFromList([this.state.list.key]).then(() => {
+        deleteItemsFromList([this.state.key]).then(() => {
+            _self.closeModal();
             _self.setState({ modalVisible: false },
                 () => {
                     NavigationService.navigate("Lists");
+                    DeviceEventEmitter.emit('updatelist', true);
                 }
             );
         });

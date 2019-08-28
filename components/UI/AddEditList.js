@@ -34,11 +34,10 @@ export default class AddEditList extends React.Component {
             var _self = this;
 
             //var user = firebase.auth().currentUser;
-            //console.log("obj: ", obj);
+
 
             createOrupdateList(obj).then(p => {
-                console.log("RETORNO: ", p);
-                this.props.callback();
+                _self.props.callback();
             }).catch(() => {
 
             });
@@ -78,9 +77,15 @@ export default class AddEditList extends React.Component {
         obj.description = value;
         this.setState({ list: obj });
     }
+    _setLimit(value) {
+        var obj = this.props.list;
+        obj.limit = value;
+        this.setState({ list: obj });
+    }
     render() {
         let pickerState = null;
         let pickerStateStatus = null;
+        console.log("this.props.list: ", this.props.list);
         if (this.props.list.type == "") {
             pickerState = styles.unselected;
         }
@@ -103,28 +108,28 @@ export default class AddEditList extends React.Component {
                 <View style={styles.rowInput}>
                     <View style={[styles.inputSelect, styles.SelectLeft]}>
                         <Picker
-                            selectedValue={this.props.list.type}
+                            selectedValue={this.props.list.type.toString()}
                             style={[styles.pickerStyle, pickerState]}
                             itemStyle={[styles.itempickerStyle]}
                             onValueChange={(itemValue, itemIndex) =>
                                 this._setSelect(itemValue)
                             }>
                             <Picker.Item label="Selecione um tipo" value="" />
-                            <Picker.Item label="Lista Padrão" value="0" />
-                            <Picker.Item label="Ranking" value="1" />
+                            <Picker.Item label="Lista Padrão" value='0' />
+                            <Picker.Item label="Ranking" value='1' />
                         </Picker>
                     </View>
                     <View style={[styles.inputSelect, styles.SelectRight]}>
                         <Picker
-                            selectedValue={this.props.list.status}
+                            selectedValue={this.props.list.status.toString()}
                             style={[styles.pickerStyle, pickerStateStatus]}
                             itemStyle={[styles.itempickerStyle]}
                             onValueChange={(itemValue, itemIndex) =>
                                 this._setStatus(itemValue)
                             }>
                             <Picker.Item label="Selecione um status" value="" />
-                            <Picker.Item label="Público" value="0" />
-                            <Picker.Item label="Privado" value="1" />
+                            <Picker.Item label="Público" value='0' />
+                            <Picker.Item label="Privado" value='1' />
                         </Picker>
                     </View>
                 </View>
@@ -136,6 +141,15 @@ export default class AddEditList extends React.Component {
                     style={[styles.inputsearch, styles.inputMulti, styles.inputText]}
                     onChangeText={(text) => this._setText(text)}
                     ref={input => { this.textInput = input }} />
+
+                <TextInput
+                    placeholder={"Limit"}
+                    keyboardType='numeric'
+                    value={this.props.list.limit.toString()}
+                    style={[styles.inputsearch, styles.inputText]}
+                    onChangeText={(text) => this._setLimit(text)}
+                    ref={input => { this.limitInput = input }}
+                />
                 <TouchableHighlight underlayColor="transparent" style={styles.saveButton} onPress={() => this.saveList()}>
                     <TabBarIcon
                         name={'save'}

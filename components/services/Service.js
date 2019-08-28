@@ -2,14 +2,16 @@
 import { getData, updateData, setData } from './baseService';
 
 
-import { post, get, del } from '../services/baseService';
+import { post, get, del, put } from '../services/baseService';
 import { getToken } from './AuthService';
 
 const token = "";
-getToken().then(token => {
-    this.token = token;
 
-});
+export function setToken() {
+    getToken().then(token => {
+        this.token = token;
+    });
+}
 
 export function updateTutorial(id: string) {
 
