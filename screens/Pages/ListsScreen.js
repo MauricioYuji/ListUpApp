@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import { insertData } from '../../components/services/baseService';
-import { deleteItemsFromList, structureList, getLists } from '../../components/services/Service';
+import { deleteItemsFromList, structureList, getLists, getListsByUser } from '../../components/services/Service';
 import ListItem from '../../components/UI/ListItem';
 import TabBarIcon from '../../components/UI/TabBarIcon';
 import AddEditList from '../../components/UI/AddEditList';
@@ -66,7 +66,6 @@ export default class ListScreen extends React.Component {
     }
 
     setVisible(content) {
-        console.log("content: ", content);
         let _self = this;
         _self.setState({ modalVisible: false },
             () => {
@@ -110,7 +109,7 @@ export default class ListScreen extends React.Component {
         //        DeviceEventEmitter.emit('reloading', false);
         //    }
         //});
-        getLists().then(list => {
+        getListsByUser(1, global.user.id).then(list => {
             structureList(list.List).then(r => {
                 var obj = [];
                 var ol = Object.keys(r);

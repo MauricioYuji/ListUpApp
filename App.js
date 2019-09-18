@@ -141,6 +141,8 @@ function _checkLogin(obj, setLoadingComplete) {
     setLoadingComplete(true);
     if (obj.data != null) {
         var data = JSON.parse(obj.data);
+
+        global.user = data;
         if (data.flagtutorial) {
             NavigationService.navigate('Main');
         } else {

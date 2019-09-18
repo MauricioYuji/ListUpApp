@@ -31,8 +31,12 @@ export function createOrupdateList(obj: any) {
     }
 
 }
-export function getLists() {
-    return get("/lists/", this.token);
+export function getLists(page: number) {
+    return get("/lists/?page=" + page + "&perpage=10", this.token);
+
+}
+export function getListsByUser(page: number, key: string) {
+    return get("/lists/" + key + "/?page=" + page + "&perpage=10", this.token);
 
 }
 export function getList(key: string) {
