@@ -40,7 +40,7 @@ export function getListsByUser(page: number, key: string) {
 
 }
 export function getList(key: string) {
-    return get("/lists/" + key, this.token);
+    return get("/list/" + key, this.token);
 
 }
 export function getGames(page: number, s: string, c: string, g: string) {
