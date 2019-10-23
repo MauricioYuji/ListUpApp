@@ -53,18 +53,28 @@ export default class ListScreen extends React.Component {
 
 
         DeviceEventEmitter.addListener('updatelist', (data) => {
+            console.log("RELOAD CONTENT");
             this.loadData();
         });
         DeviceEventEmitter.addListener('selectMode', (data) => {
             this.setState({ selectMode: data });
         });
         DeviceEventEmitter.emit('reloading', true);
+
         this.loadData();
+        //Here is the Trick
+        const { navigation } = this.props;
+        //Adding an event listner om focus
+        //So whenever the screen will have focus it will set the state to zero
+        this.focusListener = navigation.addListener('didFocus', () => {
+            this.loadData();
+        });
     }
     componentWillUnmount() {
+        // Remove the event listener before removing the screen from the stack
+        this.focusListener.remove();
         this.setState({ mounted: false });
     }
-
     setVisible(content) {
         let _self = this;
         _self.setState({ modalVisible: false },
@@ -87,28 +97,6 @@ export default class ListScreen extends React.Component {
     }
     loadData = () => {
         var _self = this;
-        //var user = firebase.auth().currentUser;
-
-        //firebase.database().ref('/userLists/' + user.uid).on('value', function (snapshot) {
-        //    if (snapshot.val() != null) {
-        //        structureList(snapshot.val()).then(r => {
-
-        //            var obj = [];
-        //            var ol = Object.keys(r);
-        //            for (var item in r) {
-        //                obj.push(r[item]);
-        //            }
-        //            _self.setState({ page: 0, lists: obj, listend: false, loading: false, mounted: true },
-        //                () => {
-        //                    DeviceEventEmitter.emit('reloading', false);
-        //                }
-        //            );
-        //            return true;
-        //        }).catch(err => console.log('There was an error:' + err));
-        //    } else {
-        //        DeviceEventEmitter.emit('reloading', false);
-        //    }
-        //});
         getListsByUser(1, global.user.id).then(list => {
             structureList(list.List).then(r => {
                 var obj = [];
@@ -173,6 +161,7 @@ export default class ListScreen extends React.Component {
         this.setVisible(this._modalAdd());
     }
     callbackAdd = () => {
+        console.log("CLOSE MODAL");
         this.setModalVisible(false);
         this.closeModal();
 

@@ -23,11 +23,10 @@ export function updateTutorial(id: string) {
 
 }
 export function createOrupdateList(obj: any) {
-    //console.log("obj: ", JSON.stringify(obj));
     if (obj._id == undefined) {
-        return post("/lists/add/", obj, this.token);
+        return post("/list/add/", obj, this.token);
     } else {
-        return put("/lists/edit/" + obj._id, obj, this.token);
+        return put("/list/edit/" + obj._id, obj, this.token);
     }
 
 }
@@ -79,10 +78,10 @@ export function getGame(key: string) {
 
 export const deleteItemsFromList = async (keys) => {
 
-    console.log("keys: ", keys);
+    //console.log("keys: ", keys);
     //var user = firebase.auth().currentUser;
 
-    return del("/lists/delete/", keys, this.token);
+    return del("/list/delete/", keys, this.token);
 
     //let lists = null;
     //var objgames = [];

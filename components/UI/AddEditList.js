@@ -33,27 +33,12 @@ export default class AddEditList extends React.Component {
             this.setState({ modelInvalid: false });
             var _self = this;
 
-            //var user = firebase.auth().currentUser;
-
 
             createOrupdateList(obj).then(p => {
                 _self.props.callback();
             }).catch(() => {
 
             });
-            //if (obj._id == undefined) {
-            //    post("/lists/", obj);
-            //    //insertData('userLists/' + user.uid + '/', obj)
-            //    //    .then((resp) => {
-            //    //        this.props.callback();
-            //    //    });
-            //} else {
-            //    put("/lists/edit/+"obj._id, obj);
-            //    //updateData('userLists/' + user.uid + '/' + obj.key, obj)
-            //    //    .then((resp) => {
-            //    //        this.props.callback();
-            //    //    });
-            //}
         }
 
     }
@@ -85,7 +70,7 @@ export default class AddEditList extends React.Component {
     render() {
         let pickerState = null;
         let pickerStateStatus = null;
-        console.log("this.props.list: ", this.props.list);
+        //console.log("this.props.list: ", this.props.list);
         if (this.props.list.type == "") {
             pickerState = styles.unselected;
         }
@@ -177,7 +162,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-
+    erroText: {
+        color: '#F00',
+        textAlign: 'center',
+        fontFamily: 'SourceSansPro-Bold',
+        fontSize: 20,
+        paddingHorizontal: 50,
+        marginTop: 50,
+    },
     menuTitle: {
         color: '#FFF',
         textAlign: 'center',
