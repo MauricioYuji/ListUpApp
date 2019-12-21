@@ -404,10 +404,10 @@ export default class Header extends React.Component {
                     </View>
                 </Animated.View>
             );
-        } else{
+        } else {
             return (
                 <View style={[styles.searchbar]}>
-                    <View style={[styles.flexGroupMax, styles.flexLeft]}>
+                    <View style={[styles.flexGroupMin, styles.flexLeft]}>
                         {this.props.back && !this.state.selectMode ?
                             (<TouchableHighlight underlayColor="transparent" onPress={() => NavigationService.goback()} style={styles.sideIcon}>
                                 <TabBarIcon
@@ -430,7 +430,7 @@ export default class Header extends React.Component {
                         <Text style={styles.labelTitle}>{this.props.label}</Text>
                         <Text style={styles.labelDetail}>{this.props.detail}</Text>
                     </View>
-                    <View style={[styles.flexGroupMax, styles.flexRight]}>
+                    <View style={[styles.flexGroupMin, styles.flexRight]}>
 
                         {this.props.itens}
 
@@ -445,18 +445,19 @@ export default class Header extends React.Component {
 
 const styles = StyleSheet.create({
     flexGroupMax: {
-        flex: 1
+        flexGrow: 2,
     },
     flexGroupMin: {
-        flex: 0
+        width: 60,
     },
     labelArea: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
     },
     sideIcon: {
-        padding: 5
+        padding: 5,
     },
     flexLeft: {
         flexDirection: 'row',

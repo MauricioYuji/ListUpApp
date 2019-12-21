@@ -10,6 +10,6 @@
     "\\screens\\Shared",
     "\\screens\\Tutorial"
   ],
-  "SelectedNode": "\\components\\UI\\AddEditList.js",
+  "SelectedNode": "\\screens\\Shared\\Header.js",
   "PreviewInSolutionExplorer": false
 }
