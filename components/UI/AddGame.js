@@ -33,32 +33,32 @@ export default class AddGame extends React.Component {
     _searchGame(search) {
         var _self = this;
 
-
-        if (_self.state.typingTimeout) {
-            clearTimeout(_self.state.typingTimeout);
-        }
-
+        console.log("_self.state.typingTimeout: ", _self.state.typingTimeout);
+        //if (_self.state.typingTimeout) {
+        //    clearTimeout(_self.state.typingTimeout);
+        //}
         _self.setState({
             typing: false,
             typingTimeout: setTimeout(function () {
                 //self.sendToParent(self.state.name);
 
-                DeviceEventEmitter.emit('loading', true);
+                //DeviceEventEmitter.emit('loading', true);
                 _self.setState({ page: 1, games: [], search: search },
                     () => {
 
-                        if (search == "") {
-                            _self.setState({ page: 1, games: [], search: search },
-                                () => {
-                                    _self.setState({ renderGames: _self.renderGames() },
-                                        () => {
-                                        }
-                                    );
-                                }
-                            );
-                        } else {
+                        console.log("search: ", search);
+                        //if (search == "") {
+                        //    _self.setState({ page: 1, games: [], search: search },
+                        //        () => {
+                        //            _self.setState({ renderGames: _self.renderGames() },
+                        //                () => {
+                        //                }
+                        //            );
+                        //        }
+                        //    );
+                        //} else {
                             _self.loadData();
-                        }
+                        //}
                     }
                 );
             }, 1)
@@ -74,16 +74,18 @@ export default class AddGame extends React.Component {
 
         //console.log("filterObj: ", this.state.filterObj);
         //console.log("page: ", this.state.page);
-        getGames(1, this.state.search, "", "").then(p => {
+
+        //console.log("this.state.search: ", this.state.search);
+        getGames(this.state.page, this.state.search, "", "").then(p => {
             //console.log("LIST GAMES: ", p);
             if (p.List != null) {
                 structureGames(p.List).then(games => {
-                    //console.log("PROCESSADO: ", games);
+                    console.log("PROCESSADO: ", games);
                     games = _self.state.games.concat(games);
                     _self.setState({ page: this.state.page, games: games, processing: false, renderGames: _self.renderGames() },
                         () => {
                             DeviceEventEmitter.emit('loading', false);
-                            process = false;
+                            //process = false;
 
                         }
                     );
@@ -104,6 +106,7 @@ export default class AddGame extends React.Component {
     renderGames() {
         let list = this.state.games;
         let items = [];
+        console.log("list: ", list);
         for (let i = 0; i < list.length; i++) {
             var game = this.props.list.games.filter(p => p._id == list[i]._id)[0];
             var userconsoles = null;

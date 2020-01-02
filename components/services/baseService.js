@@ -1,7 +1,7 @@
 //import * as firebase from 'firebase';
-//const base = "http://192.168.15.12:3000";
+const base = "http://192.168.15.47:3000";
 //const base = "http://yujishima.ddns.net:3000";
-const base = "https://listupapp.herokuapp.com";
+//const base = "https://listupapp.herokuapp.com";
 
 
 export const put = (path, obj, token) => {
