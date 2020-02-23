@@ -73,7 +73,7 @@ export default class Header extends React.Component {
             this.toggleView();
 
         this.setState({
-            visible: flag,
+            visible: flag
         });
 
     }
@@ -81,7 +81,7 @@ export default class Header extends React.Component {
 
         this.toggleView();
         this.setState({
-            visible: !this.state.visible,
+            visible: !this.state.visible
         });
 
     }
@@ -357,7 +357,7 @@ export default class Header extends React.Component {
         const consolesactive = this.state.consolesActive;
         const visible = this.state.visible;
         let { rotateAnim } = this.state;
-        if (this.props.type == "search") {
+        if (this.props.type === "search") {
             return (
                 <Animated.View style={[styles.searchbar, { height }]}>
                     <View style={styles.searchbox}>
@@ -370,7 +370,7 @@ export default class Header extends React.Component {
                         <TextInput
                             style={styles.inputsearch}
                             onChangeText={(text) => this._submitSearch(text)}
-                            ref={input => { this.textInput = input }}
+                            ref={input => { this.textInput = input; }}
                         />
                         {this.cleanSearchRender()}
                     </View>
@@ -445,27 +445,27 @@ export default class Header extends React.Component {
 
 const styles = StyleSheet.create({
     flexGroupMax: {
-        flexGrow: 2,
+        flexGrow: 2
     },
     flexGroupMin: {
-        width: 60,
+        width: 60
     },
     labelArea: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%',
+        width: '100%'
     },
     sideIcon: {
-        padding: 5,
+        padding: 5
     },
     flexLeft: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     flexRight: {
         flexDirection: 'row-reverse',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     labelTitle: {
         fontSize: 24,
@@ -527,10 +527,10 @@ const styles = StyleSheet.create({
         height: 30
     },
     filterButtonText: {
-        color: '#BBBBBB',
+        color: '#BBBBBB'
     },
     filterButtonTextActive: {
-        color: '#FFFFFF',
+        color: '#FFFFFF'
     },
     filterButtonActive: {
         backgroundColor: '#006CD8',
@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
         height: 30
     },
     filterButtonTabImg: {
-        marginHorizontal: 10,
+        marginHorizontal: 10
     },
     filterButtonImg: {
         margin: 5
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
         zIndex: 1000
     },
     closeIcon: {
-        color: '#FFF',
+        color: '#FFF'
     },
     inputsearch: {
         backgroundColor: 'rgba(255,255,255,0.3)',
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     searchbox: {
-        flex: 1,
+        flex: 1
     },
     profilebox: {
         flex: 0,
