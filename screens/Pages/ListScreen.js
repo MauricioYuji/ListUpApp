@@ -82,7 +82,7 @@ export default class ListScreen extends React.Component {
 
         const { navigation } = this.props;
         const key = navigation.getParam('key', 'NO-ID');
-
+        //console.log("list key: ", key);
         this.loadData(key);
 
     }

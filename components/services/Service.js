@@ -187,10 +187,11 @@ export const structureGames = async (games) => {
             //        genres.push(list.Genres[item.keygenre[j]]);
             //    }
             //}
+            //console.log("item: ", item);
             var obj = {
                 _id: item._id,
                 name: item.name,
-                img: item.img,
+                img: (item.img != null ? item.img[0] : item.img),
                 genres: item.keygenre,
                 consoles: consoles,
                 companies: companies,
@@ -278,20 +279,23 @@ export const deleteGamesFromList = async (keys, keylist) => {
 
 };
 export const addGamestoList = async (keylist, keygame, obj) => {
-    var user = firebase.auth().currentUser;
+    console.log("keylist: ", keylist);
+    console.log("keygame: ", keygame);
+    console.log("obj: ", obj);
+    //var user = firebase.auth().currentUser;
 
-    var itemobj = {};
-    itemobj[keygame] = obj.length <= 0 ? "" : obj;
-    getData('/userLists/' + user.uid + '/' + keylist + '/games/').then((res) => {
-        res = (res == null) ? [] : res;
-        var r = res.filter(p => Object.keys(p) == keygame);
-        var index = res.indexOf(r[0]);
-        if (res.length == 0 || index == -1) {
-            res.push(itemobj);
-        } else {
-            res[index] = itemobj;
-        }
-        setData('/userLists/' + user.uid + '/' + keylist + '/games/', res).then((res) => {
-        });
-    });
+    //var itemobj = {};
+    //itemobj[keygame] = obj.length <= 0 ? "" : obj;
+    //getData('/userLists/' + user.uid + '/' + keylist + '/games/').then((res) => {
+    //    res = (res == null) ? [] : res;
+    //    var r = res.filter(p => Object.keys(p) == keygame);
+    //    var index = res.indexOf(r[0]);
+    //    if (res.length == 0 || index == -1) {
+    //        res.push(itemobj);
+    //    } else {
+    //        res[index] = itemobj;
+    //    }
+    //    setData('/userLists/' + user.uid + '/' + keylist + '/games/', res).then((res) => {
+    //    });
+    //});
 };

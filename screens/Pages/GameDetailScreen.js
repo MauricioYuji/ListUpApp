@@ -240,7 +240,7 @@ export default class GameDetailScreen extends React.Component {
         if (item == null) {
             return null;
         } else {
-            return (<Image source={{ uri: item[0].img }} resizeMode={'cover'} style={[styles.backgroundBanner]} />);
+            return (<Image source={{ uri: "https://firebasestorage.googleapis.com/v0/b/teste-925f4.appspot.com/o/images%2F" + item + ".jpg?alt=media" }} resizeMode={'cover'} style={[styles.backgroundBanner]} />);
         }
     }
     render() {

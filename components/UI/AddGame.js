@@ -33,7 +33,7 @@ export default class AddGame extends React.Component {
     _searchGame(search) {
         var _self = this;
 
-        console.log("_self.state.typingTimeout: ", _self.state.typingTimeout);
+        //console.log("_self.state.typingTimeout: ", _self.state.typingTimeout);
         //if (_self.state.typingTimeout) {
         //    clearTimeout(_self.state.typingTimeout);
         //}
@@ -41,7 +41,7 @@ export default class AddGame extends React.Component {
         _self.setState({ page: 1, games: [], search: search },
             () => {
 
-                console.log("search: ", search);
+                //console.log("search: ", search);
                 //if (search == "") {
                 //    _self.setState({ page: 1, games: [], search: search },
                 //        () => {
@@ -64,7 +64,7 @@ export default class AddGame extends React.Component {
         //        //self.sendToParent(self.state.name);
 
         //        //DeviceEventEmitter.emit('loading', true);
-               
+
         //    }, 1)
         //});
 
@@ -84,12 +84,16 @@ export default class AddGame extends React.Component {
             //console.log("LIST GAMES: ", p);
             if (p.List !== null) {
                 structureGames(p.List).then(games => {
-                    console.log("PROCESSADO: ", games);
                     games = _self.state.games.concat(games);
-                    _self.setState({ page: this.state.page, games: games, processing: false, renderGames: _self.renderGames() },
+                    //console.log("PROCESSADO: ", games);
+                    _self.setState({ page: this.state.page, games: games, processing: false },
                         () => {
                             DeviceEventEmitter.emit('loading', false);
                             //process = false;
+                            _self.setState({ renderGames: _self.renderGames() },
+                                () => {
+                                }
+                            );
 
                         }
                     );
@@ -110,8 +114,8 @@ export default class AddGame extends React.Component {
     renderGames() {
         let list = this.state.games;
         let items = [];
-        console.log("this.props.list: ", this.props.list);
-        console.log("list: ", list);
+        //console.log("this.props.list: ", this.props.list);
+        //console.log("list: ", list);
         for (let i = 0; i < list.length; i++) {
             var game = undefined;
             if (this.props.list.games.length > 0) {
@@ -123,9 +127,9 @@ export default class AddGame extends React.Component {
             }
             //console.log("game: ", game);
             //console.log("list[i]: ", list[i]);
-            items.push(<AddGameItem key={i} game={list[i]} userConsoles={userconsoles} callback={this.addGameSave.bind(this)} id={list[i].id} />);
+            items.push(<AddGameItem key={i} game={list[i]} userConsoles={userconsoles} callback={this.addGameSave.bind(this)} id={this.props.list._id} />);
         }
-        console.log("items: ", items);
+        //console.log("items: ", items);
         return items;
     }
     render() {

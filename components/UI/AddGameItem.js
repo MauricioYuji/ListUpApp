@@ -15,7 +15,6 @@ export default class AddGameItem extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log("props: ", props);
     }
 
     state = {
@@ -47,6 +46,8 @@ export default class AddGameItem extends React.Component {
         }
     }
     showButtons = () => {
+        //console.log("this.props: ", this.props);
+        //console.log("this.state: ", this.state);
         if(this.props.userConsoles != this.state.consolesActive && this.state.consolesActive.length == 0){
             this.setConsoles();
         }
@@ -105,7 +106,7 @@ export default class AddGameItem extends React.Component {
         _self.setState({ addFeedback: true }, () => {
             setTimeout(function () {
                 _self.setState({ addFeedback: false, showButtons: false }, () => {
-                    addGamestoList(_self.props.id, _self.props.game.id, _self.state.consolesActive).then((resp) => {
+                    addGamestoList(_self.props.id, _self.props.game._id, _self.state.consolesActive).then((resp) => {
                         _self.props.callback();
                     });
                 });
@@ -113,11 +114,11 @@ export default class AddGameItem extends React.Component {
         });
     }
     renderThumb = (item) => {
-        console.log("item: ", item);
+        //console.log("item: ", item);
         if (item == undefined)
             return (<Image source={require('../../assets/images/console-icon.png')} resizeMode={'cover'} style={styles.thumb} />);
         else {
-            return (<Image source={{ uri: item.url }} resizeMode={'cover'} style={styles.thumb} />);
+            return (<Image source={{ uri: "https://firebasestorage.googleapis.com/v0/b/teste-925f4.appspot.com/o/images%2F" + item + ".jpg?alt=media" }} resizeMode={'cover'} style={styles.thumb} />);
         }
     }
     listPlatforms = () => {
@@ -136,7 +137,7 @@ export default class AddGameItem extends React.Component {
         for (let j = 0; j < objarray.length; j++) {
             var styleclass = null;
             var imgcolor = '';
-            if (filteractive.includes(objarray[j].id.toString())) {
+            if (filteractive.includes(objarray[j].key.toString())) {
                 styleclass = styles.filterButtonActive;
                 imgcolor = '#FFFFFF';
             } else {
@@ -144,7 +145,7 @@ export default class AddGameItem extends React.Component {
                 imgcolor = '#BBBBBB';
             }
             obj.push(
-                <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveConsole(objarray[j].id, false)} key={objarray[j].name} style={[styleclass]}>
+                <TouchableHighlight underlayColor="transparent" onPress={(a) => this.ActiveConsole(objarray[j].key, false)} key={objarray[j].name} style={[styleclass]}>
                     <View>
                         <Image source={{ uri: objarray[j].img }} resizeMode={'contain'} style={[styles.filterButtonImg, { width: objarray[j].width / 5, height: objarray[j].height / 5, tintColor: imgcolor }]} />
                     </View>
@@ -184,11 +185,12 @@ export default class AddGameItem extends React.Component {
         if (this.state.showButtons) {
             boxstyle = styles.activeBox;
         }
+        //console.log("this.props.game: ", this.props.game);
         return (
             <View>
                 <View style={[styles.listItem, boxstyle]}>
                     <View style={styles.itemInfo}>
-                        {this.renderThumb(this.props.game.image)}
+                        {this.renderThumb(this.props.game.img)}
                         <View>
                             <Text style={styles.labelTitle}>{this.props.game.name}</Text>
                         </View>
